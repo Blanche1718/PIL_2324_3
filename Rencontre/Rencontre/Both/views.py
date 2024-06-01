@@ -2,6 +2,11 @@
 from django.shortcuts import render
 
 
+def profil_views(request):
+    return render(request, 'Both/profil.html')
+
+def modif_views(request):
+    return render(request, 'Both/modif.html')
 
 
 
