@@ -24,7 +24,7 @@ def login_views(request):
     return render(request, 'Both/login.html')
 
 def informations_views(request):
-    return render(request, 'Both/informations_personelles.html')
+    return render(request, 'Both/informations.html')
 
 def contact_views(request):
     return render(request, 'Both/contact.html')

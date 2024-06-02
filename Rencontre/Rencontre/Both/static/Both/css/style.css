@@ -195,7 +195,8 @@ body {
   background: linear-gradient(to bottom, pink, white);
   font-weight: 600;
   font-family: Poppins;
-  margin: 0px; }
+  margin: 0px;
+ }
 
 .main {
   padding: 150px 0;
