@@ -56,8 +56,12 @@ WSGI_APPLICATION = 'Rencontre.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Django_base',
+        'USER': 'postgres',
+        'PASSWORD':'angelina17.',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
