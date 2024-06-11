@@ -24,18 +24,6 @@
             <div class="sign-up-content">
                 <form method="POST" class="signup-form">
                     {% csrf_token %}
-                    <!--- <h2 class="form-title">What type of user are you ?</h2>
-                    <div class="form-radio">
-                        <input type="radio" name="member_level" value="newbie" id="newbie" checked="checked" />
-                        <label for="newbie">New bee</label>
-
-                        <input type="radio" name="member_level" value="average" id="average" />
-                        <label for="average">Average</label>
-
-                        <input type="radio" name="member_level" value="master" id="master" />
-                        <label for="master">Master</label>
-                    </div>
-                    -->
                     <div id="logo">
                         <img src="../static/Both/img/logo.png" alt=""  >
 
@@ -45,6 +33,21 @@
                         <input type="email" name="email" id="email" />
                     </div>
 
+                    <div class="form-textbox">
+                        <label for="pseudo">Pseudo</label>
+                        <input type="text" name="pseudo" id="pseudo" />
+                    </div>
+                    
+                    <div class="form-textbox">
+                        <label for="nom">Nom</label>
+                        <input type="text" name="nom" id="name" />
+                    </div>
+
+                    <div class="form-textbox">
+                        <label for="prenom">Prénoms</label>
+                        <input type="text" name="prenom" id="prenom" />
+                    </div>
+                    
                     <div class="form-textbox">
                         <label for="pass">Mot de passe</label>
                         <input type="password" name="pass" id="pass" />
