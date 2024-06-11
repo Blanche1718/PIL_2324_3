@@ -20,8 +20,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Both',  # Ajoutez votre application ici
+    'Both',  
+    'channels',
+    'django_cleanup.apps.CleanupConfig',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'django_htmx',
+    'a_rtchat',
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -31,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'Rencontre.urls'
@@ -50,19 +60,39 @@ TEMPLATES = [
         },
     },
 ]
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 WSGI_APPLICATION = 'Rencontre.wsgi.application'
+ASGI_APPLICATION = 'Rencontre.asgi.application'
+
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False
 
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Django_base',
-        'USER': 'postgres',
-        'PASSWORD':'angelina17.',
-        'HOST': 'localhost',
+        'NAME': 'Django_Base',
+        'USER': 'POSTGRES',
+        'PASSWORD': 'angelina17.',
+        'HOST':'localhost',
         'PORT': '5432',
     }
+}
+CHANNEL_LAYERS = {
+    'default':{
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG':{
+            "hosts":[('127.0.0.1', 6379)],
+        },
+    },
 }
 
 # Password validation

@@ -21,6 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('Both/', include('Both.urls')),
     path('', include('Both.urls')),  # Route racine dirigée vers Both
+    path('accounts/', include ('allauth.urls')),
+    path('', include('a_rtchat.urls')),
 ]
 from django.conf import settings
 from django.conf.urls.static import static
