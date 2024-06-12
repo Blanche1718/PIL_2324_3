@@ -17,12 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+app_name = 'Both'
+app_name = 'a_rtchat'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('Both/', include('Both.urls')),
     path('', include('Both.urls')),  # Route racine dirigée vers Both
     path('accounts/', include ('allauth.urls')),
-    path('', include('a_rtchat.urls')),
+    path('home/', include('a_rtchat.urls')),
 ]
 from django.conf import settings
 from django.conf.urls.static import static
@@ -30,5 +33,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Both.urls')),
+    path('accounts/', include ('allauth.urls')),
+    path('home/', include('a_rtchat.urls')),
     # vos autres URL patterns ici
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
