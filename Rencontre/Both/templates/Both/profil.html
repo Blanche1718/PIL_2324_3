@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'Both/css/profil.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <nav>
+                <ul>
+                    <li><img src="../../static/Both/img/logo.png" class="logo"></li>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Menu</a></li>
+                    <li><a href="#">À propos</a></li>
+                    <li><a href="#">Historique</a></li>
+                </ul>
+            </nav>
+            <h1>Profil de {{ profile.user.username }}</h1>
+            <p>photo : {{ profile.photo }}</p>
+            <p>bio : {{ profile.bio }}</p>
+            <p>numero : {{ profile.numero }}</p>
+            <p>age : {{ profile.age }}</p>
+            <p>date_d_anniversaire: {{ profile.date_d_anniversaire }}</p>
+            <p> profession : {{  profile.profession }}</p>
+            <p>genre : {{ profile.genre }} </p>
+             
+    </div>
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'logout' %}">DECONNEXION <span class="sr-only">(current)</span></a>
+      </li>
+</body>
+</html>
+
