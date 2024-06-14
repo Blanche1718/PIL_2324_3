@@ -48,7 +48,7 @@ ROOT_URLCONF = 'Rencontre.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR,'a_rtchat', 'templates'), os.path.join(BASE_DIR,'Both', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,10 +120,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'Both' / 'static']
-
+STATICFILES_DIRS = [BASE_DIR / 'Both' / 'static' , BASE_DIR/'a_rtchat'/'static',]
+STATIC_ROOT = BASE_DIR/'staticfiles'
+#Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR/'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#authentification
-LOGIN_REDIRECT_URL= 'index'
