@@ -134,4 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL= 'modif'
 
 LOGOUT_REDIRECT_URL = 'login'
+<<<<<<< HEAD
 >>>>>>> 5dc269b1eb8fbed39675ddfca1070a22da0419d4:Rencontre/Rencontre/settings.py
+=======
+>>>>>>> 5dc269b1eb8fbed39675ddfca1070a22da0419d4
