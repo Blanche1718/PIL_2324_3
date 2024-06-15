@@ -79,8 +79,8 @@ ACCOUNT_EMAIL_REQUIRED = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test',
-        'USER': 'postgres',
+        'NAME': 'Django_Base',
+        'USER': 'POSTGRES',
         'PASSWORD': 'angelina17.',
         'HOST':'localhost',
         'PORT': '5432',
@@ -128,13 +128,8 @@ MEDIA_ROOT = BASE_DIR/'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-<<<<<<< HEAD:Rencontre/Rencontre/Rencontre/settings.py
-=======
 #authentification
 LOGIN_REDIRECT_URL= 'modif'
 
 LOGOUT_REDIRECT_URL = 'login'
-<<<<<<< HEAD
->>>>>>> 5dc269b1eb8fbed39675ddfca1070a22da0419d4:Rencontre/Rencontre/settings.py
-=======
->>>>>>> 5dc269b1eb8fbed39675ddfca1070a22da0419d4
+

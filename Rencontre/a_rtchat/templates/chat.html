@@ -25,10 +25,14 @@
                 {%else%}
                 <li>
                     <div class="message-left">
-                        <div class="message-author" >
-                            <a href="{%url 'profil' message.author.username%}">
-                                <img src="{{message.author.profil.avatar.url}}" alt="Avatar de l'utilisateur">
-                            </a>
+                        <div class="message-author">
+                            {% if message.author.username %}
+                                <a href="{% url 'profil' message.author.username %}">
+                                    <img src="{{ message.author.profil.avatar.url }}" alt="Avatar de l'utilisateur">
+                                </a>
+                            {% else %}
+                                <img src="{{ message.author.profil.avatar.url }}" alt="Avatar de l'utilisateur">
+                            {% endif %}
                         </div>
                         <div class="message-arrow" >
                             <svg height="13" width="8" >
@@ -39,7 +43,7 @@
                             <span>{{message.body}}</span>
                         </div>  
                     </div>
-                    <div class="message-author-nfo">
+                    <div class="message-author-info">
                         <span class="author-name">{{message.author.profil.name}}</span> 
                         <span class="author-username">@{{message.author.username}}</span>
                     </div>
