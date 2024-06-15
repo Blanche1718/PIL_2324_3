@@ -5,14 +5,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView , LoginView
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('Both/', include('Both.urls')),
     path('', include('Both.urls')),
     path('accounts/', include ('allauth.urls')),
     path('chat/', include('a_rtchat.urls')),
-    path('logout', LogoutView.as_view(next_page='login' ), name='logout')
+    path('logout/', LogoutView.as_view(next_page='login' ), name='logout')
 
 ]
 if settings.DEBUG:
