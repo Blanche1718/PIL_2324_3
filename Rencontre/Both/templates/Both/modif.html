@@ -14,7 +14,7 @@
     <div class="container light-style flex-grow-1 container-p-y">
         <h4 class="font-weight-bold py-3 mb-4">
             Paramètres
-        </h4><form method="post">
+        </h4><form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Enregistrer</button>

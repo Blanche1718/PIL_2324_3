@@ -1,10 +1,14 @@
+
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+   
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" href="profil.css">
+    <link rel="stylesheet" href="{% static 'Both/css/profil.css ' %}">
 </head>
 <body>
     <div class="container">
@@ -33,7 +37,11 @@
                 <div class="user-info">
                     <img >
                     <div>
-                        {% if user.profile.photo %} <img src="{{user.profile.photo.url }}" alt="Photo de profil">
+
+                        {% if profile.photo %} 
+                            <img src="{{ .profile.photo.url }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
+                        {% else %}
+                            <p>No date</p>
                         {% endif %}
                         <h1>Profil de {{ profile.user.username }}</h1>
                         <p> {{profile.user.first_name}} {{profile.user.last_name}} </p>
@@ -50,52 +58,52 @@
                     <div class="info-group">
                         <h2>Informations complémentaires</h2>
                         <p><strong>Fonction(s):</strong> {{  profile.profession }}</p>
-                        <p><strong>Date de naissance:</strong> {{ profile.date_d_anniversaire }}</p>
-                        <p><strong>Genre:</strong>  {{ profile.genre }}</p>
+                       
                     </div>
                     <div class="intérêt">
-                        <p><strong>Bio</strong>{{ profile.bio }}</p>
                         
                     </div>
                     <div class="contact">
                         <p><strong>Contact:</strong></p>
-                        <p><strong>>numero:</strong>  {{ profile.numero }} </p>
-                        <p><strong>Email</strong>  {{profile.user.email}} </p>
+                        <p><strong>numero:</strong>  {{ profile.numero }} </p>
+                        <p><strong>Email:</strong>  {{profile.user.email}} </p>
                     </div>
                 </div>
                 <div class="additional-details">
-                    <!--
+    
                     <div class="details">
                         <div class="detail-item">
-                            <p><strong>Address:</strong> 525 E 68th Street, New York, NY 10551-78 156-187-60</p>
+                            <p><strong>Localisation:</strong> {{profile.Localisation}} </p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Country:</strong> US</p>
+                            <p><strong>Taille:</strong> {{ profile.taille }}</p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Branch:</strong> New York</p>
+                            <p><strong>Branch:</strong> Bénin</p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Site:</strong> <a href="https://www.abconline.com">www.abconline.com</a></p>
+                            <p><strong>Couleur de peau:</strong> {{ profile.Couleur_de_peau }}</p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Birthday:</strong> June 5, 1984</p>
+                            <p><strong>Birthday:</strong> {{ profile.date_d_anniversaire }}</p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Gender:</strong> Male</p>
+                            <p><strong>Genre:</strong> {{ profile.genre }}</p>
                         </div>
-                        <div class="detail-item">
-                            <p><strong>Languages:</strong> English, German, French</p>
-                        </div>
+                       
                     </div>
-                    -->
+                    
                     <div class="work">
                         <h3>Lieu de travail</h3>
                         <p>{{profile.lieu_de_travail}}  </p>
                     </div>
+                    <div class="work">
+                        <h3>Secteur d'activité</h3>
+                        <p>{{profile.Secteur_d_activite}}  </p>
+                    </div>
                     <div class="about">
-                        <h3>Biographie:</h3>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                        <h3>Bio:</h3>
+                        <p>{{ profile.bio }}</p>
                     </div>
                 </div>
             </section>

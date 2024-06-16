@@ -42,4 +42,4 @@ class MyUserForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['photo','bio','numero','age','profession','date_d_anniversaire','genre','sex','lieu_de_travail']
+        fields = ['photo','bio','numero','age','profession','date_d_anniversaire','genre','sex','lieu_de_travail','Corpulence','Couleur_de_peau','Localisation','Secteur_d_activite','taille']
