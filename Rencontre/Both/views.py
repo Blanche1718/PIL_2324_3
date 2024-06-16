@@ -1,44 +1,53 @@
+from typing import Any
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest
+from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
 from .form import MyUserForm, ProfileForm
 from .models import Profile
-#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 
+
+@login_required
 def view_profile(request):
     profile = get_object_or_404(Profile, user=request.user)
     return render(request, 'Both/profil.html', {'profile': profile})
 
+@login_required
 def edit_profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            return redirect('suggestions')
+            return redirect('profil')
     else:
         form = ProfileForm(instance=request.user.profile)
     return render(request, 'Both/modif.html', {'form': form})
 
 
 def inscription_views(request):
+    if request.user.is_authenticated:
+        return redirect('profil')
     if request.method == 'POST':
         form = MyUserForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
-    
     else :
         form = MyUserForm()
-    
-        
-
-
-
     context = {
         'form': form,
     }
-
     return render(request, 'Both/inscription.html', context)
+
+class Myloginview(LoginView):
+    template_name= 'Both/login.html'
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('profil')
+        return super().dispatch(request, *args, **kwargs)
+    
 
 def index(request):
     return render(request, 'Both/index.html')

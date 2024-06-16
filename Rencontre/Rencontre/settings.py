@@ -71,8 +71,8 @@ AUTHENTICATION_BACKENDS = [
 WSGI_APPLICATION = 'Rencontre.wsgi.application'
 ASGI_APPLICATION = 'Rencontre.asgi.application'
 
-LOGIN_REDIRECT_URL = '/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/login/'
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = False
 
@@ -130,7 +130,7 @@ MEDIA_ROOT = BASE_DIR/'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #authentification
-LOGIN_REDIRECT_URL= 'modif'
+LOGIN_REDIRECT_URL= 'profil'
 
 LOGOUT_REDIRECT_URL = 'login'
 

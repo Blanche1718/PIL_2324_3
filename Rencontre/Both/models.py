@@ -9,6 +9,8 @@ class Profile(models.Model):
     date_d_anniversaire = models.DateField(null = True , blank= True)
     profession = models.CharField(max_length=20, null=True)
     genre = models.CharField(max_length=20, null=True)
+    sex = models.CharField(max_length=20 , null= True, blank=True)
+    lieu_de_travail= models.CharField(max_length=100, null= True, blank=True)
 
     def __str__(self):
         return self.user.username
