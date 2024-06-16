@@ -20,9 +20,9 @@
                     <li><a href="#">À propos</a></li>
                     <li><a href="#">Historique</a></li>
                     <li>{% if user.is_authenticated %}
-                    <form method="POST" action="{% url 'logout' %}">
+                    <form method="POST"  action="{% url 'logout' %}">
                         {% csrf_token %}
-                        <button type="submit">Deconnexion</button>
+                     <button type="submit"> Déconnexion</button>
                     </form>
                     {% else %}
                     <a href="{% url 'login' %}">Connexion</a>

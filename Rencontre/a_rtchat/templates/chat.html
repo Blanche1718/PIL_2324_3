@@ -10,52 +10,18 @@
         <div id='chat_container' class="chat-container">
             <ul id='chat_messages' class="chat-messages">
                 {% for messages in chat_messages reversed%}
-                {% if message.author == user%}
-
-                <li class="message-right">
-                    <div class="message-content">
-                        <span>{{message.body}}</span>
-                    </div>
-                    <div class="message-arrow">
-                        <svg height="13" width="8" >
-                            <path fill="#bbf7d0" d="M6.3,10.4C1.5,8.7,0.9,5.5,0,0.2L0,13l5.2,0C7,13,9.6,11.5,6.3,10.4z"/>
-                        </svg>
-                    </div>
-                </li>
-                {%else%}
-                <li>
-                    <div class="message-left">
-                        <div class="message-author">
-                            {% if message.author.username %}
-                                <a href="{% url 'profil' message.author.username %}">
-                                    <img src="{{ message.author.profil.avatar.url }}" alt="Avatar de l'utilisateur">
-                                </a>
-                            {% else %}
-                                <img src="{{ message.author.profil.avatar.url }}" alt="Avatar de l'utilisateur">
-                            {% endif %}
-                        </div>
-                        <div class="message-arrow" >
-                            <svg height="13" width="8" >
-                                <path fill="white" d="M2.8,13L8,13L8,0.2C7.1,5.5,6.5,8.7,1.7,10.4C-1.6,11.5,1,13,2.8,13z"></path>
-                            </svg>
-                        </div>
-                        <div class="message-content">
-                            <span>{{message.body}}</span>
-                        </div>  
-                    </div>
-                    <div class="message-author-info">
-                        <span class="author-name">{{message.author.profil.name}}</span> 
-                        <span class="author-username">@{{message.author.username}}</span>
-                    </div>
-                </li>
-    
-                {% endif %}
+                {% include 'chat_message.html'%}
+                
                 {%endfor %}
             </ul>
         </div>
         <div class="chat-input">
-                <form id="chat_message_form" method='POST' class="w-full">
-                    <input type="text" name="message" placeholder="Add message ..." maxlength="150">
+                <form id="chat_message_form"  class="w-full" 
+                    hx-post ="{% url 'chat_home' %}"
+                    hx-target="#chat_messages"
+                    hx-swap="beforeend">
+                    {% csrf_token %}
+                    {{form}}
                 </form>
             </div>
         </div>
