@@ -28,14 +28,59 @@
     </div>
     <div class="sub-container">
         <div class="chat-body" id="chat-body">
+
+            {% for chat in chats%}
+            {% if chat .msg_sender == user and chat.msg_receiver == profile%}
+            <div class="chat-box-sent">
+                {{chat}}
+            </div>
+            {% elif chat.msg_sender == profile and chat.msg_receiver == user %}
+            <div class="chat-box-received">
+                {{chat}}
+            </div>
+            {% endif %}
+
+            {% endfor%}
             <div class="chat-box-sent" id="chat-box-sent" style="display: none;"></div>
         </div>
         <form action="" id="myform" method="POST">
-            {{form}}
+            {% csrf_token %}
+            {{form.body}}
             <button type="submit" id="submit">Send</button>
         </form>
     </div>
 
 </div>
+
+<script>
+
+    let form= document.getElementById("myform")
+    form.addEventListener("submit", sendChat)
+    function sendChat(e){
+        e.preventDefault()
+        let chatMessage= document.getElementById("id_body").value
+        console.log(chatMessage)
+
+
+        async function postJSON(chatMessage) {
+  try {
+    const reponse = await fetch("https://example.com/profile", {
+      method: "POST", // ou 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(chatMessage),
+    });
+
+    const resultat = await reponse.json();
+    console.log("Réussite :", resultat);
+  } catch (erreur) {
+    console.error("Erreur :", erreur);
+  }
+}
+
+
+    }
+</script>
 
 {%endblock%}

@@ -1,11 +1,11 @@
 from typing import Any
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
 from .form import MyUserForm, ProfileForm,ChatMessageForm
-from .models import Friend, Profile
+from .models import ChatMessage, Friend, Profile
 from django.contrib.auth.views import LoginView
 
 
@@ -83,6 +83,21 @@ def chat_index(request):
 
 def detail(request, pk):
     friend=Friend.objects.get(profile_id=pk)
+    user=request.user.profile
+    profile = Profile.objects.get(id = friend.profile.id)
+    chats=ChatMessage.objects.all()
     form = ChatMessageForm
-    context = {"friend" : friend , "form":form}
+    if request.method == "POST":
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+           chat_message=form.save(commit=False)
+           chat_message.msg_sender=user
+           chat_message.msg_receiver= profile
+           chat_message.save()
+           return redirect("detail", pk=friend.profile.id) 
+    context = {"friend" : friend , "form":form, "user":user ,"profile":profile ,"chats":chats}
     return render (request , "Both/detail.html" , context)
+
+
+def sentMessages(request):
+    return JsonResponse("It is working", safe=False)
