@@ -15,10 +15,10 @@ urlpatterns = [
     path('informations/',views.informations_views,name='Informations'),
     path('contact/',views.contact_views,name='contact'),
     path('logout/',LogoutView.as_view(next_page='login' ) ,name='logout'),
-    path('suggestions/', views.suggestions, name='suggestions'),
-    path('user/<int:pk>/', views.user_detail, name='user_detail'),
-    path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
-
+     path('preferences/', views.edit_preferences, name='edit_preferences'),  
+    path('suggestions/', views.suggestions, name='suggestions'), 
+    path('profile/<int:user_id>/', views.profile_detail, name='profile_detail'),
+   
 
 
 

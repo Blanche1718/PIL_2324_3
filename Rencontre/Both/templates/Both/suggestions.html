@@ -1,16 +1,21 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Suggestions</title>
+    <title>Suggestions de Partenaires</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
-<body>
-    <h2>Suggestions de partenaires</h2>
-    <ul>
-        {% for suggestion in suggestions %}
-            <li>
-                <a href="{% url 'user_detail' suggestion.pk %}">{{ suggestion.user.first_name }} {{ suggestion.user.last_name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+<body style="background-color: #ADD8E6;">
+    <div class="container">
+        <h2>Suggestions de Partenaires</h2>
+        <a href="{% url 'edit_preferences' %}" class="btn btn-secondary" style="float: right; margin-bottom: 10px;">Modifier Mes Préférences</a>
+        <ul>
+            {% for profile in profiles %}
+                <li>
+                    <a href="{% url 'profile_detail' profile.id %}">{{ profile.user.username }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>

@@ -81,8 +81,8 @@ ACCOUNT_EMAIL_REQUIRED = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Django_Base',
-        'USER': 'POSTGRES',
+        'NAME': 'SUGG',
+        'USER': 'postgres',
         'PASSWORD': 'angelina17.',
         'HOST':'localhost',
         'PORT': '5432',
