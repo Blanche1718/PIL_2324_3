@@ -18,5 +18,20 @@ urlpatterns = [
     path('suggestions/', views.suggestions, name='suggestions'),
     path('user/<int:pk>/', views.user_detail, name='user_detail'),
     path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
+
+
+
+
+
+
+    path('password_reset/', views.password_reset_request, name='password_reset'),
+    path('password_reset/done/', views.mailsend, name='password_reset_done'),
+    path('reset/', views.newpass, name='password_reset_confirm'),
+    path('done/',views.done , name='password_reset_complete'),
+
+
+
+
+    
 ]
     

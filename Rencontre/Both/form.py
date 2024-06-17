@@ -7,24 +7,24 @@ from django.contrib.auth.models import User
 from .models import Profile
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='pseudo' , widget=forms.TextInput(attrs={
+    username = forms.CharField(label='Pseudo' , widget=forms.TextInput(attrs={
         'class':'form-control', 
     }))
-    password = forms.CharField(label='mot de passe' , widget=forms.PasswordInput(attrs={
+    password = forms.CharField(label='Pot de passe' , widget=forms.PasswordInput(attrs={
         'class':'form-control',}))
 
 
 class MyUserForm(UserCreationForm):
-    username = forms.CharField(label='pseudo' , widget=forms.TextInput(attrs={
+    username = forms.CharField(label='Pseudo' , widget=forms.TextInput(attrs={
         'class':'form-control', 
     }))
-    first_name = forms.CharField(label='nom' , widget=forms.TextInput(attrs={
+    first_name = forms.CharField(label='Nom' , widget=forms.TextInput(attrs={
         'class':'form-control',}))
-    last_name = forms.CharField(label='prenom' , widget=forms.TextInput(attrs={
+    last_name = forms.CharField(label='Prénom' , widget=forms.TextInput(attrs={
         'class':'form-control',}))
-    password1 = forms.CharField(label='mot de passe' , widget=forms.PasswordInput(attrs={
+    password1 = forms.CharField(label='Mot de passe' , widget=forms.PasswordInput(attrs={
         'class':'form-control',}))
-    password2 = forms.CharField(label='confirmez le mot de passe' , widget=forms.PasswordInput(attrs={
+    password2 = forms.CharField(label='Confirmez le mot de passe' , widget=forms.PasswordInput(attrs={
         'class':'form-control',}))
     email = forms.CharField(label='Email' , widget=forms.EmailInput(attrs={
         'class':'form-control',}))

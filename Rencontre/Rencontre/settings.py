@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'django_htmx',
     'a_rtchat',
+    
 
 ]
 
@@ -133,4 +134,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL= 'profil'
 
 LOGOUT_REDIRECT_URL = 'login'
+#PASSWORD RESET
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tossinonaresh@gmail.com'
+EMAIL_HOST_PASSWORD = 'mdov nrzl zaun khxt'
 

@@ -72,3 +72,76 @@ def suggestions(request):
 def user_detail(request, pk):
     user_profile = get_object_or_404(Profile, pk=pk)
     return render(request, 'Both/user_detail.html', {'user_profile': user_profile})
+
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib.auth.views import PasswordResetView
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse_lazy
+from django.conf import settings
+
+
+
+class CustomPasswordResetView(PasswordResetView):
+    success_url = reverse_lazy('password_reset_done')
+
+    def form_valid(self, form):
+        
+        site_name = get_current_site(self.request).name
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = User.objects.filter(email=data)
+            if associated_users.exists():
+                for user in associated_users:
+                    
+                    reset_url = f"{'https'}://{'domain'}/reset/{'uid'}/{'token'}"
+
+                    subject = "Réinitialisation du mot de passe demandée"
+                    message = (
+                f"Bonjour,\n\n"
+                f"Vous avez demandé à réinitialiser votre mot de passe pour le site Both. "
+                f"Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n\n"
+                f"{reset_url}\n\n"
+                f"Si vous n'avez pas fait cette demande, veuillez ignorer cet e-mail.\n\n"
+                f"Merci,\nL'équipe Both"
+                )
+                    
+                    
+                    
+                    c = user.email
+                    try:
+                        send_mail(subject,message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+                    except Exception as e:
+                        return HttpResponse(f"Erreur lors de l'envoi de l'email : {e}")
+                    return redirect("password_reset_confirm")
+    password_reset_form = PasswordResetForm()
+    return render(request, 'Both/password_reset_form.html', context={"form":password_reset_form})
+
+def mailsend(request):
+    return render(request, 'Both/password_reset_done.html')
+
+def newpass(request):
+    return render(request, 'Both/password_reset_confirm.html')
+def done(request):
+    return render(request, 'Both/password_reset_complete.html')
