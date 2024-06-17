@@ -18,5 +18,9 @@ urlpatterns = [
     path('suggestions/', views.suggestions, name='suggestions'),
     path('user/<int:pk>/', views.user_detail, name='user_detail'),
     path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
+    path('chats/', views.chat_index, name='chats'),
+    path('friend/<str:pk>', views.detail, name='detail')
+
+
 ]
     

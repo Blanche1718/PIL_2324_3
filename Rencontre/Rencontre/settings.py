@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'django_htmx',
-    'a_rtchat',
+    
 
 ]
 
@@ -49,7 +49,7 @@ ROOT_URLCONF = 'Rencontre.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'a_rtchat', 'templates'), os.path.join(BASE_DIR,'Both', 'templates')],
+        'DIRS': [ os.path.join(BASE_DIR,'Both', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,7 +121,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'Both' / 'static' , BASE_DIR/'a_rtchat'/'static',]
+STATICFILES_DIRS = [BASE_DIR / 'Both' / 'templates/static' , ]
 STATIC_ROOT = BASE_DIR/'staticfiles'
 #Media files
 MEDIA_URL = 'images/'

@@ -4,8 +4,8 @@ from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
-from .form import MyUserForm, ProfileForm
-from .models import Profile
+from .form import MyUserForm, ProfileForm,ChatMessageForm
+from .models import Friend, Profile
 from django.contrib.auth.views import LoginView
 
 
@@ -73,3 +73,16 @@ def suggestions(request):
 def user_detail(request, pk):
     user_profile = get_object_or_404(Profile, pk=pk)
     return render(request, 'Both/user_detail.html', {'user_profile': user_profile})
+
+
+def chat_index(request):
+    user=request.user.profile
+    friends= user.friends.all()
+    context = {"user": user , "friends":friends}
+    return render (request , "Both/chat_index.html" , context)
+
+def detail(request, pk):
+    friend=Friend.objects.get(profile_id=pk)
+    form = ChatMessageForm
+    context = {"friend" : friend , "form":form}
+    return render (request , "Both/detail.html" , context)
