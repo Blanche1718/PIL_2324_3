@@ -17,7 +17,8 @@ def view_profile(request):
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=request.user.profile)
+        print(request.FILES)
+        form = ProfileForm(request.POST,request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
             return redirect('profil')
