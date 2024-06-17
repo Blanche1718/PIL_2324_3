@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="chat-container">
+    <div class="main">
+        <div class="logo">
+            ChatMe
+        </div>
+
+        <div class="sub-main">
+            <div class="main-user">
+                <img src="{{user.photo.url}}" alt="profile picture">
+            </div>
+            <p>@{{request.user.username}}</p>
+        </div>
+    </div>
+
+    <div class="header">Messages</div>
+
+    <div class="friends-container">
+        {% for friend in friends%}
+        <a href="{%url 'detail' friend.profile.id%}" style="color: palevioletred; text-decoration: none">
+            <div class="friends">
+                <div class="pic">
+                    <img src="{{friend.profile.photo.url}}" alt=""/>
+                </div>
+                <div class="name">
+                    <h5>{{friend.profile.user.username}}</h5>
+                    <p>How are you doing today</p>
+                </div>
+                <div class="time_new_msg">
+                    <div class="msg">0</div>                
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+        
+    </div>
+
+    <div class="footer">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 9c1.104 0 2 .896 2 2v1H6v-1c0-1.104.896-2 2-2z"/>
+                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+        </div>
+
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 3.293l-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9.293l-6-6zM7 13V9.5H9V13H7z"/>
+                <path fill-rule="evenodd" d="M8 2.293l6 6V13.5A2.5 2.5 0 0 1 11.5 16h-9A2.5 2.5 0 0 1 0 13.5V8.293l6-6a1 1 0 0 1 1.415 0L8 2.293z"/>
+            </svg>
+        </div>
+
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                <path d="M9.605 1.05a1 1 0 0 0-1.21 0l-.931.676a1 1 0 0 1-1.175 0l-.931-.676a1 1 0 0 0-1.21 0l-.93.676a1 1 0 0 1-1.176 0l-.931-.676a1 1 0 0 0-1.21 0L.75 1.794a1 1 0 0 0-.375.968l.194 1.177a1 1 0 0 1 0 .354l-.194 1.177a1 1 0 0 0 .375.968l.931.676a1 1 0 0 1 0 1.175l-.931.676a1 1 0 0 0-.375.968l.194 1.177a1 1 0 0 0 .375.968l.931.676a1 1 0 0 1 1.175 0l.931-.676a1 1 0 0 0 1.21 0l.93-.676a1 1 0 0 1 1.176 0l.931.676a1 1 0 0 0 1.21 0l.93-.676a1 1 0 0 1 1.176 0l.931.676a1 1 0 0 0 1.21 0l.931-.676a1 1 0 0 0 .375-.968l-.194-1.177a1 1 0 0 1 0-.354l.194-1.177a1 1 0 0 0-.375-.968l-.931-.676a1 1 0 0 1 0-1.175l.931-.676a1 1 0 0 0 .375-.968l-.194-1.177a1 1 0 0 0-.375-.968l-.931-.676a1 1 0 0 1 0-1.175l.931-.676a1 1 0 0 0 .375-.968l-.194-1.177a1 1 0 0 0-.375-.968L9.605 1.05zM8 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+            </svg>
+        </div>
+    </div>
+</div>
+{%endblock %}
+
