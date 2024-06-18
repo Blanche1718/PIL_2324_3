@@ -142,12 +142,26 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
 }
+.chat-box-sent, .chat-box-received {
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    clear: both;
+    display: block;
+}
+
 
 .chat-box-sent {
     background-color: #e2f7cb;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 5px;
+    align-self: flex-end;
+    float: right;
+}
+
+.chat-box-received {
+    background-color: palevioletred;
+    align-self: flex-start;
+    float: left;
 }
 
 form {
@@ -155,8 +169,8 @@ form {
     align-items: center;
 }
 
-#input {
-    flex: 1;
+#id_body {
+    flex-grow: 1;
     padding: 8px;
     margin-right: 10px;
     font-size: 16px;

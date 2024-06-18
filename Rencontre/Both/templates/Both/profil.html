@@ -1,0 +1,114 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+   
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'Both/css/profil.css ' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <nav>
+                <ul>
+                    <li><img src="logo.png" class="logo"></li>
+                    <li><a href="#">Menu</a></li>
+                    <li><a href="#">À propos</a></li>
+                    <li><a href="#">Historique</a></li>
+                    <li>{% if user.is_authenticated %}
+                    <form method="POST"  action="{% url 'logout' %}">
+                        {% csrf_token %}
+                     <button type="submit"> Déconnexion</button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'login' %}">Connexion</a>
+                    {% endif %}
+                </li>
+                {% block content %}{% endblock %}
+                </ul>
+            </nav>
+        </div>
+        <main class="main-content">
+            <header>
+                <div class="user-info">
+                    <img >
+                    <div>
+
+                        {% if profile.photo %} 
+                            <img src="{{ .profile.photo.url }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
+                        {% else %}
+                            <p>No date</p>
+                        {% endif %}
+                        <h1>Profil de {{ profile.user.username }}</h1>
+                        <p> {{profile.user.first_name}} {{profile.user.last_name}} </p>
+                        <p><strong>Âge:</strong> {{ profile.age }} </p>
+                        <p><strong>Sex:</strong>  {{profile.sex }} </p>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button class="edit-profile"><a href="{% url 'modif' %}">Editer de profil</a></button>
+                </div>
+            </header>
+            <section class="profile-details">
+                <div class="profile-summary">
+                    <div class="info-group">
+                        <h2>Informations complémentaires</h2>
+                        <p><strong>Fonction(s):</strong> {{  profile.profession }}</p>
+                       
+                    </div>
+                    <div class="intérêt">
+                        
+                    </div>
+                    <div class="contact">
+                        <p><strong>Contact:</strong></p>
+                        <p><strong>numero:</strong>  {{ profile.numero }} </p>
+                        <p><strong>Email:</strong>  {{profile.user.email}} </p>
+                    </div>
+                </div>
+                <div class="additional-details">
+    
+                    <div class="details">
+                        <div class="detail-item">
+                            <p><strong>Localisation:</strong> {{profile.Localisation}} </p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Taille:</strong> {{ profile.taille }}</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Branch:</strong> Bénin</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Couleur de peau:</strong> {{ profile.Couleur_de_peau }}</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Birthday:</strong> {{ profile.date_d_anniversaire }}</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Genre:</strong> {{ profile.genre }}</p>
+                        </div>
+                       
+                    </div>
+                    
+                    <div class="work">
+                        <h3>Lieu de travail</h3>
+                        <p>{{profile.lieu_de_travail}}  </p>
+                    </div>
+                    <div class="work">
+                        <h3>Secteur d'activité</h3>
+                        <p>{{profile.Secteur_d_activite}}  </p>
+                    </div>
+                    <div class="about">
+                        <h3>Bio:</h3>
+                        <p>{{ profile.bio }}</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
+

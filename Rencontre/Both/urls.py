@@ -20,7 +20,10 @@ urlpatterns = [
     path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
     path('chats/', views.chat_index, name='chats'),
     path('friend/<str:pk>', views.detail, name='detail'),
-    path("sent_msg",views.sentMessages, name="sent_msg")
+    path('sent_msg/<str:pk>',views.sentMessages, name='sent_msg'),
+    path('rec_msg/<str:pk>',views.receivedMessages, name='rec_msg'),
+    path('notification',views.chatNotification, name='notification'),
+
 
 
 ]

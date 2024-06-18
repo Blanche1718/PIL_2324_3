@@ -27,7 +27,7 @@
                 </div>
                 <div class="name">
                     <h5>{{friend.profile.user.username}}</h5>
-                    <p>How are you doing today</p>
+                    <p></p>
                 </div>
                 <div class="time_new_msg">
                     <div class="msg">0</div>                
@@ -60,5 +60,26 @@
         </div>
     </div>
 </div>
+
+<script>
+        setInterval(getNotificaton, 1000)
+    function getNotificaton(){
+        let url="{% url 'notification' %}"
+
+        fetch(url)
+        .then(res=>res.json)
+        .then(data=>{
+            console.log(data)
+            let chatNotificatonBtn = document.getElementsByClassName("msg")
+            for(let i =0; i<data.length; i++){
+                chatNotificatonBtn[i].innerText=data[i]
+
+            }
+        })
+
+        .catch(error=>console.log(error))
+    }
+</script>
+
 {%endblock %}
 
