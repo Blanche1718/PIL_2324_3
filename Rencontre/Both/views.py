@@ -154,7 +154,7 @@ def suggestions(request):
         Couleur_de_peau=preferences.teint_preference,
         Corpulence=preferences.corpulence_preference,  
         Localisation=preferences.localisation_preference,
-        genre='Féminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
+        genre='Feminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
     )
     return render(request, 'Both/suggestions.html', {'profiles': profiles})
 
