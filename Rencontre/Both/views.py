@@ -9,6 +9,29 @@ from .form import MyUserForm, PreferencesForm,ChatMessageForm
 from .models import Preferences, Profile,ChatMessage,Friend
 from django.contrib.auth.views import LoginView
 from PIL import Image   
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib.auth.views import PasswordResetView
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse_lazy
+from django.conf import settings
+import json
 
 
 from django.contrib.auth.decorators import login_required
@@ -187,54 +210,10 @@ def edit_preferences(request):
     return render(request, 'Both/preferences.html', {'form': form})
 
 
-
-@login_required
-def suggestions(request):
-    preferences = get_object_or_404(Preferences, user=request.user)
-    profiles = Profile.objects.filter(
-        age__gte=preferences.age_min,
-        age__lte=preferences.age_max,
-        taille__gte=preferences.taille_min,
-        taille__lte=preferences.taille_max,
-        Couleur_de_peau=preferences.teint_preference,
-        Corpulence=preferences.corpulence_preference,  
-        Localisation=preferences.localisation_preference,
-        genre='Feminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
-    )
-    return render(request, 'Both/suggestions.html', {'profiles': profiles})
-
-
 @login_required
 def profile_detail(request, user_id):
     profile = get_object_or_404(Profile, id=user_id)
     return render(request, 'Both/user_detail.html', {'profile': profile})
-
-
-
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.shortcuts import render, redirect
-from django.conf import settings
-from django.contrib.auth.views import PasswordResetView
-from django.core.mail import send_mail
-from django.urls import reverse_lazy
-from django.conf import settings
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse_lazy
-from django.conf import settings
-import json
-
 
 
 
@@ -286,32 +265,40 @@ def newpass(request):
 def done(request):
     return render(request, 'Both/password_reset_complete.html')
 
+@login_required
 def chat_index(request):
     user=request.user.profile
     friends= user.friends.all()
     context = {"user": user , "friends":friends}
     return render (request , "Both/chat_index.html" , context)
 
+@login_required
 def detail(request, pk):
-    friend=Friend.objects.get(profile_id=pk)
-    user=request.user.profile
-    profile = Profile.objects.get(id = friend.profile.id)
-    chats=ChatMessage.objects.all()
-    rec_chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
+    friend = Friend.objects.get(profile_id=pk)
+    user = request.user.profile
+    profile = Profile.objects.get(id=friend.profile.id)
+    
+    # Vérifiez si les deux utilisateurs sont amis pour permettre la messagerie
+    if not user.friends.filter(profile=profile).exists() or not profile.friends.filter(profile=user).exists():
+        return HttpResponse("Vous devez être amis pour discuter.")
+
+    chats = ChatMessage.objects.all()
+    rec_chats = ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
     rec_chats.update(seen=True)
     form = ChatMessageForm
     if request.method == "POST":
         form = ChatMessageForm(request.POST)
         if form.is_valid():
-           chat_message=form.save(commit=False)
-           chat_message.msg_sender=user
-           chat_message.msg_receiver= profile
-           chat_message.save()
-           return redirect("detail", pk=friend.profile.id) 
-    context = {"friend" : friend , "form":form, "user":user ,"profile":profile ,"chats":chats,"num":rec_chats.count() }
-    return render (request , "Both/detail.html" , context)
+            chat_message = form.save(commit=False)
+            chat_message.msg_sender = user
+            chat_message.msg_receiver = profile
+            chat_message.save()
+            return redirect("detail", pk=friend.profile.id) 
+    context = {"friend": friend, "form": form, "user": user, "profile": profile, "chats": chats, "num": rec_chats.count()}
+    return render(request, "Both/detail.html", context)
 
 
+@login_required
 def sentMessages(request, pk):
     user=request.user.profile
     friend= Friend.objects.get(profile_id=pk)
@@ -322,6 +309,7 @@ def sentMessages(request, pk):
     print(new_chat)
     return JsonResponse(new_chat_message.body, safe=False)
 
+@login_required
 def receivedMessages(request, pk):
     user= request.user.profile
     friend= Friend.objects.get(profile_id=pk)
@@ -332,7 +320,7 @@ def receivedMessages(request, pk):
         arr.append(chat.body)
     return JsonResponse(arr , safe=False)
 
-
+@login_required
 def chatNotification(request):
     user=request.user.profile
     friends= user.friends.all()
@@ -341,3 +329,66 @@ def chatNotification(request):
         chats=ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
         arr.append(chats.count())
     return JsonResponse(arr , safe=False)
+
+@login_required
+def suggestions(request):
+    preferences = get_object_or_404(Preferences, user=request.user)
+    profiles = Profile.objects.filter(
+        age__gte=preferences.age_min,
+        age__lte=preferences.age_max,
+        taille__gte=preferences.taille_min,
+        taille__lte=preferences.taille_max,
+        Couleur_de_peau=preferences.teint_preference,
+        Corpulence=preferences.corpulence_preference,  
+        Localisation=preferences.localisation_preference,
+        genre='Feminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
+    )
+    return render(request, 'Both/suggestions.html', {'profiles': profiles})
+
+@login_required
+def respond_to_suggestion(request, profile_id):
+    user = request.user.profile
+    profile = get_object_or_404(Profile, id=profile_id)
+
+    if request.method == 'POST':
+        response = request.POST.get('response')  # "yes" ou "no"
+        
+        if response == "yes":
+            # Créer une relation Friend si elle n'existe pas déjà
+            friend, created = Friend.objects.get_or_create(profile=user)
+            friend, created = Friend.objects.get_or_create(profile=friend)
+
+            # Ajouter les amis mutuels
+            user.friends.add(friend)
+            profile.friends.add(friend)
+
+            # Vérifiez si l'autre utilisateur a aussi accepté la suggestion
+            if profile.friends.filter(profile=user).exists():
+                # Les deux utilisateurs ont accepté, la messagerie peut être débloquée
+    
+                pass
+
+        # Rediriger vers la page des suggestions après avoir enregistré la réponse
+        return redirect('suggestions')
+
+    return render(request, 'Both/connect_request.html', {'target_profile': profile})
+
+
+@login_required
+def load_suggestions(request):
+    # Récupérez les suggestions à partir de votre modèle ou d'une autre source de données
+    suggestions = Profile.objects.all()[:5]  
+
+    
+    suggestions_data = []
+    for profile in suggestions:
+        suggestions_data.append({
+            'user': {
+                'username': profile.user.username,
+                
+            },
+            'photo_url': profile.photo.url  
+            
+        })
+
+    return JsonResponse(suggestions_data, safe=False)

@@ -10,20 +10,14 @@
 <body>
     <div class="grid">
         <header>
-            <h1 class="logo_both">B</h1>
-            <!--<form class="recherche_block">
-                <input type="search" name="recherche_id" id="recherche_id" class="recherche_id" placeholder="Recherche">
-                <button type="submit" class="btn"><img src="bx-search.svg" alt="recherche" class="icon_recherche"/></button>
-                    <img src="bx-search.svg" alt="recherche" class="icon_recherche"/>
-            </form>-->
-            <nav > 
+            <h1 class="logo_both">Both</h1>
+            <nav> 
                 <ul class="navigation" id="nav_menu">
-                    <li class="NAV"><a href="{% url 'profil' %}" class="profil">Profile</a></li>
                     <li class="NAV"><a href="#" class="suggestion">Suggestion</a></li>
-                    <li class="NAV"><a href="#" class="lien">Messagerie</a></li>
+                    <li class="NAV"><a href="{% url 'profil' %}" class="profil">Profile</a></li>
+                    <li class="NAV"><a href="{% url 'chats' %}" class="lien">Messagerie</a></li>
                     <li class="NAV"><a href="#" class="invitation">Invitation</a></li>
                 </ul>
-            
             </nav>
             <form class="menu_additionnel">
                 <img src="bx-menu.svg" alt="menu" class="bx-menu" onclick="deroulle_menu()">
@@ -31,51 +25,71 @@
         </header>
         <section class="contient_suggestion">
             <div class="horizontal-snap">
-                <section class="profile_suggestion">
+                {% for profile in profiles %}
+                <section id="profile_{{ profile.id }}" class="profile_suggestion">
                     <aside class="s_profile">
                         <div class="ph_s_profile">
-                            <h1 class="pourcentage_compatibilite">75%</h1>
-                        <img src="toto.jpg" alt="photo de profile suggérer" class="photo_profile">
-                        <form class="choix_sprofile">
-                            <button type="button"class="choix "><img src="bx-check.svg" alt="oui" class="i_oui"></button>
-                            <button type="button" class="choix"><img src="bx-x.svg" alt="non" class="i_non"></button>
-                            <button type="button" class="choix"><img src="bx-right-arrow-alt.svg" alt="passe" class="i_passe"></button>
-                        </form>
+                            <img src="{% if profile.image %}{{ profile.image.url }}{% else %}placeholder.jpg{% endif %}" alt="Photo" class="photo_profile">
+                            <form class="choix_sprofile">
+                                <button type="button" class="choix"><img src="bx-check.svg" alt="oui" class="i_oui"></button>
+                                <button type="button" class="choix" onclick="rejectProfile('{{ profile.id }}')"><img src="bx-x.svg" alt="non" class="i_non"></button>
+                                <button type="button" class="choix" onclick="nextProfile('{{ profile.id }}')"><img src="bx-right-arrow-alt.svg" alt="passe" class="i_passe"></button>
+                            </form>
                         </div>
-                        
                     </aside>
-                    
                     <article class="info_profile">
                         <a href="#" class="plus_info_sprofile">!</a>
                         <div class="age_sex">
-                            <p class="sex_sprofile"></p>
-                            <p class="age_sprofile"></p>
+                            <p class="sex_sprofile">{{ profile.genre }}</p>
+                            <p class="age_sprofile">{{ profile.age }}</p>
                         </div>
-                        
-                        <p class="nom_sprofile"></p>
-                        <p class="prenom_sprofile"></p>
-                        <p class="description_sprofile"></p>
+                        <p class="nom_sprofile">{{ profile.user.last_name }}</p>
+                        <p class="prenom_sprofile">{{ profile.user.first_name }}</p>
+                        <p class="description_sprofile">{{ profile.bio }}</p>
                     </article>
-                    
+                
+                    {% include 'Both/connect_request.html' %}
                 </section>
+                {% endfor %}
                 <article class="additionnel_sprofile">
-                    
+    
                 </article>
             </div>
         </section>
     </div>
 
     <script>
-        var nav_menu =document.getElementById("nav_menu")
-        nav_menu.style.maxHeight="0px"
+        var nav_menu = document.getElementById("nav_menu");
+        nav_menu.style.maxHeight = "0px";
+
         function deroulle_menu() {
-            if (nav_menu.style.maxHeight=="0px") {
-                nav_menu.style.maxHeight="160px"
+            if (nav_menu.style.maxHeight == "0px") {
+                nav_menu.style.maxHeight = "160px";
+            } else {
+                nav_menu.style.maxHeight = "0px";
             }
-            else
-            {
-                nav_menu.style.maxHeight="0px"
+        }
+
+        function nextProfile(profileId) {
+            // Cacher le profil actuel
+            var currentProfile = document.getElementById("profile_" + profileId);
+            currentProfile.style.display = "none";
+
+            
+            var nextProfile = currentProfile.nextElementSibling;
+            if (nextProfile) {
+                nextProfile.style.display = "block";  // Afficher le profil suivant
+            } else {
+                
+                
             }
+        }
+
+        function rejectProfile(profileId) {
+            // Cacher le profil actuel
+            var currentProfile = document.getElementById("profile_" + profileId);
+            currentProfile.style.display = "none";
+            
             
         }
     </script>
