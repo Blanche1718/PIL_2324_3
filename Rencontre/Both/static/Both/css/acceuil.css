@@ -10,7 +10,7 @@
 
 }
 body{
-    background-color: plum;
+    background-color: palevioletred;
     font-family: GreatVibes;
     font-size: 32px;
 }
@@ -21,7 +21,7 @@ body{
 }
 
 header{
-    background-color: aqua;
+    background-color:whitesmoke ;
     grid-row: 1/2;
     grid-column: 1/5;
     display: flex;
