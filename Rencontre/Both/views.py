@@ -144,7 +144,7 @@ def inscription_views(request):
         form = MyUserForm()
     context = {
         'form': form,
-        'user':user,
+        
     }
     return render(request, 'Both/inscription.html', context)
 
