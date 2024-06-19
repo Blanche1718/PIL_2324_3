@@ -1,5 +1,0 @@
-pillow 
-django-htmx
-django-allauth
-channels
-django-cleanup

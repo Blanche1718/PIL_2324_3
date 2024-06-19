@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'django_htmx',
-    'a_rtchat',
+    
     
 
 ]
@@ -50,7 +50,7 @@ ROOT_URLCONF = 'Rencontre.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'a_rtchat', 'templates'), os.path.join(BASE_DIR,'Both', 'templates')],
+        'DIRS': [ os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,8 +81,8 @@ ACCOUNT_EMAIL_REQUIRED = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'VIE',
-        'USER': 'postgres',
+        'NAME': 'Django_Base',
+        'USER': 'POSTGRES',
         'PASSWORD': 'angelina17.',
         'HOST':'localhost',
         'PORT': '5432',
@@ -122,16 +122,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'Both' / 'static' , BASE_DIR/'a_rtchat'/'static',]
+STATICFILES_DIRS = [BASE_DIR /'Both' /'static' , ]
 STATIC_ROOT = BASE_DIR/'staticfiles'
 #Media files
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_URL = 'images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #authentification
-LOGIN_REDIRECT_URL= 'profil'
+LOGIN_REDIRECT_URL= 'suggestions'
 
 LOGOUT_REDIRECT_URL = 'login'
 #PASSWORD RESET

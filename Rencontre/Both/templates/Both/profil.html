@@ -1,23 +1,14 @@
-{% load static %}
-<<<<<<< HEAD
-{% load static %}
-=======
 
 {% load static %}
 
->>>>>>> 9b0b1901b345c53bd5804709b9393201b4d89663
 <!DOCTYPE html>
 <html lang="en">
    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-<<<<<<< HEAD
-    <link rel="stylesheet" href="{% static 'Both/css/profil.css' %}">
-=======
+    <title> Profile de l'utilisateur</title>
     <link rel="stylesheet" href="{% static 'Both/css/profil.css ' %}">
->>>>>>> 9b0b1901b345c53bd5804709b9393201b4d89663
 </head>
 <body>
     <div class="container">
@@ -47,10 +38,10 @@
                     <img >
                     <div>
 
-                        {% if profile.photo %} 
-                            <img src="{{ .profile.photo.url }}" alt="Photo de profil" style="max-width: 200px; max-height: 200px;">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" alt="Profile Image">
                         {% else %}
-                            <p>No date</p>
+                            <p>Aucune photo de profil disponible.</p>
                         {% endif %}
                         <h1>Profil de {{ profile.user.username }}</h1>
                         <p> {{profile.user.first_name}} {{profile.user.last_name}} </p>
@@ -60,8 +51,7 @@
                 </div>
                 <div class="user-actions">
                     <button class="edit-profile"><a href="{% url 'modif' %}">Editer de profil</a></button>
-                    <button class="continue"><a href="{% url 'edit_preferences' %}">Continuer</a></button>
-
+                    <button class="edit-profile"><a href="{% url 'edit_preferences' %}">Preferences</a></button>
                 </div>
             </header>
             <section class="profile-details">
@@ -75,7 +65,6 @@
                         
                     </div>
                     <div class="contact">
-                        <p><strong>Contact:</strong></p>
                         <p><strong>numero:</strong>  {{ profile.numero }} </p>
                         <p><strong>Email:</strong>  {{profile.user.email}} </p>
                     </div>
@@ -90,13 +79,13 @@
                             <p><strong>Taille:</strong> {{ profile.taille }}</p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Branch:</strong> Bénin</p>
+                            <p><strong>Pays:</strong> Bénin</p>
                         </div>
                         <div class="detail-item">
                             <p><strong>Couleur de peau:</strong> {{ profile.Couleur_de_peau }}</p>
                         </div>
                         <div class="detail-item">
-                            <p><strong>Birthday:</strong> {{ profile.date_d_anniversaire }}</p>
+                            <p><strong>Date d'anniversaire:</strong> {{ profile.date_d_anniversaire }}</p>
                         </div>
                         <div class="detail-item">
                             <p><strong>Genre:</strong> {{ profile.genre }}</p>
@@ -104,14 +93,8 @@
                        
                     </div>
                     
-                    <div class="work">
-                        <h3>Lieu de travail</h3>
-                        <p>{{profile.lieu_de_travail}}  </p>
-                    </div>
-                    <div class="work">
-                        <h3>Secteur d'activité</h3>
-                        <p>{{profile.Secteur_d_activite}}  </p>
-                    </div>
+                  
+                        
                     <div class="about">
                         <h3>Bio:</h3>
                         <p>{{ profile.bio }}</p>

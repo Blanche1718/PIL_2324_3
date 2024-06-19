@@ -11,16 +11,136 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container light-style flex-grow-1 container-p-y">
-        <h4 class="font-weight-bold py-3 mb-4">
-            Paramètres
-        </h4><form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Enregistrer</button>
-        </form>
+    <form method="post" enctype="multipart/form-data">
+        <div class="container light-style flex-grow-1 container-p-y">
+            <h4 class="font-weight-bold py-3 mb-4">
+                Paramètres
+                
+            </h4>
         
-    </div>
+        
+                {% csrf_token %}
+                <div class="card overflow-hidden" >
+                    <div class="row no-gutters row-bordered row-border-light">
+                        <div class="col-md-3 pt-0">
+                            <div class="list-group list-group-flush account-settings-links">
+                                <a class="list-group-item list-group-item-action active" data-toggle="list"
+                                    href="#account-general">Général</a>
+                                <a class="list-group-item list-group-item-action" data-toggle="list"
+                                    href="#account-change-password">Changer le mot de passe</a>
+                                <a class="list-group-item list-group-item-action" data-toggle="list"
+                                    href="#account-info">Informations personnelles</a>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="tab-content">
+                                <div class="tab-pane fade active show" id="account-general">
+                                    <div class="card-body media align-items-center">
+                                        <label for="id_image">Photo de profil:</label>
+                                        <input type="file" id="id_image" name="image"><br>
+                                        {% if user.profile.image %}
+                                            <img src="{{ user.profile.image.url }}" alt="Profile Image" style="max-width: 100px; max-height: 100px;">
+                                        {% endif %}
+                                        <div class="media-body ml-4">
+                                            
+                                            <button type="button" class="btn btn-default md-btn-flat">Réinitialiser</button>
+                                            <div class="text-light small mt-1 text-dark">Les fichiers JPG, GIF et PNG sont autorisés</div>
+                                        </div>
+                                    </div>
+                                
+                                    <hr class="border-light m-0">
+                                    <!--General-->
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="id_first_name">Prénom:</label>
+                                            <input type="text" id="id_first_name" name="first_name" value="{{ user.first_name }}" required><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_last_name">Nom de famille:</label>
+                                            <input type="text" id="id_last_name" name="last_name" value="{{ user.last_name }}" required><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_email">Email:</label>
+                                            <input type="email" id="id_email" name="email" value="{{ user.email }}" required><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Change password-->
+                                <div class="tab-pane fade" id="account-change-password">
+                                    <div class="card-body pb-2">
+                                        <div class="form-group">
+                                            <label class="form-label">Mot de passe actuel</label>
+                                            <input type="password" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Nouveau mot de passe</label>
+                                            <input type="password" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Confirmer le mot de passe</label>
+                                            <input type="password" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Info-->
+                                <div class="tab-pane fade" id="account-info">
+                                    <div class="card-body pb-2">
+                                        <div class="form-group">
+                                            <label for="id_bio" class="form-label">Bio:</label><br>
+                                            <textarea id="id_bio" name="bio" rows="4" cols="50">{{ request.user.profile.bio }}</textarea><br><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_date_d_anniversaire" class="form-label">Date d'anniversaire:</label><br>
+                                            <input type="date" id="id_date_d_anniversaire" name="date_d_anniversaire" value="{{ request.user.profile.date_d_anniversaire }}" class="form-control"><br><br>
+                                        </div>
+                                    </div>
+                                    <hr class="border-light m-0">
+                                        <div class="form-group">
+                                            <label for="id_numero" class="form-label">Numero:</label><br>
+                                            <input type="tel" id="id_numero" name="numero" value="{{ request.user.profile.numero }}" class="form-control"><br><br>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="id_age" class="form-label">Age:</label><br>
+                                            <input type="" id="id_age" name="age" value="{{ request.user.profile.age }}" class="form-control"><br><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_profession" class="form-label">Profession:</label><br>
+                                            <input type="text" id="id_profession" name="profession" value="{{ request.user.profile.profession }}" class="form-control"><br><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_taille" class="form-label">Taille:</label><br>
+                                            <input type="text" id="id_taille" name="taille" value="{{ request.user.profile.taille }}" class="form-control"><br><br>
+                                        <div class="form-group">
+                                            <label for="id_genre" class="form-label">Genre:</label><br>
+                                            <input type="text" id="id_genre" name="genre" value="{{ request.user.profile.genre }}" class="form-control"><br><br>
+                                         </div>
+                                        <div class="form-group">
+                                            <label for="id_sex" class="form-label">Sex:</label><br>
+                                            <input type="text" id="id_sex" name="sex" value="{{ request.user.profile.sex }}" class="form-control"><br><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_Corpulence" class="form-label">Corpulence:</label><br>
+                                            <input type="text" id="id_Corpulence" name="Corpulence" value="{{ request.user.profile.Corpulence }}" class="form-control"><br><br>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_Couleur_de_peau" class="form-label">Couleur de peau:</label><br>
+                                            <input type="text" id="id_Couleur_de_peau" name="Couleur_de_peau" value="{{ request.user.profile.Couleur_de_peau }}" class="form-control"><br><br>
+                                        </div>
+                                    
+                                        
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="text-right mt-3">
+                <button type="submit" class="btn btn-primary" value="Enregistrer">Enregistrer</button>&nbsp;
+                <button type="button" class="btn btn-default"><a href="{% url 'profil' %}" >Retour</a></button>
+        </div>
+    </form>
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>

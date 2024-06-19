@@ -10,15 +10,22 @@ urlpatterns = [
     path('profil/', views.view_profile, name='profil'),
     path('modif/', views.edit_profile, name='modif'),
     path('inscription/',views.inscription_views,name='inscription'),
-    path('login/', views.Myloginview.as_view(), name='login'),
-    path('login/',LoginView.as_view(template_name = 'Both/login.html', next_page='profil' ) , name='login'),
-    path('informations/',views.informations_views,name='Informations'),
+    path('login/',LoginView.as_view(template_name = 'Both/login.html', next_page='suggestions' ) , name='login'),
     path('contact/',views.contact_views,name='contact'),
     path('logout/',LogoutView.as_view(next_page='login' ) ,name='logout'),
-     path('preferences/', views.edit_preferences, name='edit_preferences'),  
+    path('preferences/', views.edit_preferences, name='edit_preferences'),  
     path('suggestions/', views.suggestions, name='suggestions'), 
     path('profile/<int:user_id>/', views.profile_detail, name='profile_detail'),
-   
+    path('restaurant/', views.restaurant_suggestions, name='restaurant'),
+    path('results/<str:budget_level>/<str:preferred_cuisine>/', views.show_results, name='suggestions'),
+    path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
+    path('chats/', views.chat_index, name='chats'),
+    path('friend/<str:pk>', views.detail, name='detail'),
+    path('sent_msg/<str:pk>',views.sentMessages, name='sent_msg'),
+    path('rec_msg/<str:pk>',views.receivedMessages, name='rec_msg'),
+    path('notification',views.chatNotification, name='notification'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+
 
 
 

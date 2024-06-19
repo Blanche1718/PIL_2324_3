@@ -10,7 +10,6 @@ urlpatterns = [
     path('Both/', include('Both.urls')),
     path('', include('Both.urls')),
     path('accounts/', include ('allauth.urls')),
-    path('chat/', include('a_rtchat.urls')),
     path('logout/', LogoutView.as_view(next_page='login' ), name='logout')
 
 ]

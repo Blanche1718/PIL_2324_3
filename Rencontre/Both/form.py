@@ -4,7 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.models import User
-from .models import Profile , Preferences
+from .models import Profile , Preferences,ChatMessage
+from django.forms import ModelForm
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Pseudo' , widget=forms.TextInput(attrs={
@@ -37,15 +38,16 @@ class MyUserForm(UserCreationForm):
 
 
 
-
-
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['photo','bio','numero','age','profession','date_d_anniversaire','genre','sex','lieu_de_travail','Corpulence','Couleur_de_peau','Localisation','Secteur_d_activite','taille']
-
-
 class PreferencesForm(forms.ModelForm):
     class Meta:
         model = Preferences
         fields = ['age_min', 'age_max', 'taille_min', 'taille_max', 'teint_preference', 'corpulence_preference', 'localisation_preference']
+
+
+
+
+class ChatMessageForm(ModelForm):
+    body=forms.CharField(widget=forms.Textarea(attrs={"class":"forms", "rows":3, "placeholder":"Type message here"}))
+    class Meta:
+        model = ChatMessage
+        fields=["body",]

@@ -1,20 +1,21 @@
 from typing import Any
 from urllib import request
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
-from .form import MyUserForm, PreferencesForm, ProfileForm
-from .models import Preferences, Profile
+from .form import MyUserForm, PreferencesForm,ChatMessageForm
+from .models import Preferences, Profile,ChatMessage,Friend
 from django.contrib.auth.views import LoginView
+from PIL import Image   
 
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .form import MyUserForm, PreferencesForm, ProfileForm
-from .models import Preferences, Profile
+from .form import MyUserForm, PreferencesForm
+from .models import Preferences, Profile , Restaurant
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
@@ -27,7 +28,28 @@ from django.urls import reverse_lazy
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.views import LoginView
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
+class CustomLoginView(LoginView):
+    template_name = 'login.html'  # Template pour la vue de connexion
+
+    def form_valid(self, form):
+        # Récupérer l'utilisateur qui vient de se connecter
+        user = self.request.user
+
+        # Vérifier si c'est la première connexion
+        if user.is_authenticated and user.is_first_login:
+            # Mettre à jour l'indicateur de première connexion
+            user.is_first_login = False
+            user.save()
+
+            # Rediriger vers la page1 après la première connexion
+            return redirect('modif')
+        else:
+            # Rediriger vers la page2 pour les connexions suivantes
+            return redirect('profil')
 
 @login_required
 def view_profile(request):
@@ -35,16 +57,78 @@ def view_profile(request):
     return render(request, 'Both/profil.html', {'profile': profile})
 
 
+def restaurant_suggestions(request):
+    if request.method == 'POST':
+        budget_level = request.POST.get('budget_level')
+        preferred_cuisine = request.POST.get(' preferred_cuisine')
+        
+        return redirect('suggestions', budget_level=budget_level,  preferred_cuisine= preferred_cuisine)
+    
+    return render(request, 'Both/resto_preferences.html')
+
+def show_results(request, budget_level, preferred_cuisine):
+    restaurants = Restaurant.objects.filter(budget_level=budget_level, preferred_cuisine=preferred_cuisine)
+
+    print(restaurants)  
+    
+    return render(request, 'Both/liste_resto.html', {'restaurants': restaurants})
+
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        if form.is_valid():
-            form.save()
-            return redirect('profil')
-    else:
-        form = ProfileForm(instance=request.user.profile)
-    return render(request, 'Both/modif.html', {'form': form})
+        # Récupérer les données du formulaire POST
+        bio = request.POST.get('bio', '')
+        numero = request.POST.get('numero', '')
+        age = request.POST.get('age', '')
+        date_d_anniversaire= request.POST.get('date_d_anniversaire', '')
+        profession= request.POST.get('profession', '')
+        genre = request.POST.get('genre', '')
+        sex = request.POST.get('sex', '')
+        Corpulence= request.POST.get('Corpulence', '')
+        Couleur_de_peau = request.POST.get('Couleur_de_peau', '')
+        Localisation = request.POST.get('age', '')
+        taille = request.POST.get('age', '')
+
+    user = request.user
+
+    if request.method == 'POST':
+        # Mettre à jour les informations de l'utilisateur à partir des données POST
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.email = request.POST['email']
+        user.save()
+
+        #messages.success(request, 'Votre profil a été mis à jour avec succès!')
+
+        # Récupérer le profil de l'utilisateur connecté
+        profile = Profile.objects.get(user=user)
+
+        # Mettre à jour les champs du profil avec les nouvelles données
+        profile.bio = bio
+        profile.Localisation = Localisation
+        profile.date_d_anniversaire = date_d_anniversaire
+        profile.numero = numero
+        profile.age = age
+        profile.profession = profession
+        profile.genre = genre
+        profile.sex = sex 
+        profile.Corpulence= Corpulence
+        profile.Couleur_de_peau = Couleur_de_peau
+        profile.taille = taille
+
+        if 'image' in request.FILES:
+            profile.image = request.FILES['image']
+            
+            
+        profile.save()
+
+        return redirect('profil')
+    context = {
+        'user': user,
+    }
+
+
+    return render(request, 'Both/modif.html', context)
 
 
 
@@ -55,65 +139,26 @@ def inscription_views(request):
         form = MyUserForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Try to get existing profile for the user
-            try:
-                profile = Profile.objects.get(user=user)
-                # Update existing profile with new data
-                profile.first_name = user.first_name
-                profile.last_name = user.last_name
-                profile.save()
-            except Profile.DoesNotExist:
-                # Create profile if it doesn't exist
-                Profile.objects.create(user=user)
-
-            # Try to get existing preferences for the user
-            try:
-                preferences = Preferences.objects.get(user=user)
-                # Update existing preferences with new data
-                preferences.save()  # Update the preferences fields accordingly
-            except Preferences.DoesNotExist:
-                # Create preferences if they don't exist
-                Preferences.objects.create(user=user)
-
-            return redirect('login')
+        return redirect('login')
     else:
         form = MyUserForm()
     context = {
         'form': form,
+        'user':user,
     }
     return render(request, 'Both/inscription.html', context)
 
 
-class Myloginview(LoginView):
-    template_name = 'Both/login.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('profil')
-        return super().dispatch(request, *args, **kwargs)
 
 
 def index(request):
     return render(request, 'Both/index.html')
 
 
-def informations_views(request):
-    return render(request, 'Both/informations.html')
 
 
 def contact_views(request):
     return render(request, 'Both/contact.html')
-
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        if form.is_valid():
-            form.save()
-            return redirect('profil')
-    else:
-        form = ProfileForm(instance=request.user.profile)
-    return render(request, 'Both/modif.html', {'form': form})
 
 @login_required
 def edit_preferences(request):
@@ -161,7 +206,7 @@ def suggestions(request):
 
 @login_required
 def profile_detail(request, user_id):
-    profile = get_object_or_404(Profile, user_id=user_id)
+    profile = get_object_or_404(Profile, id=user_id)
     return render(request, 'Both/user_detail.html', {'profile': profile})
 
 
@@ -188,6 +233,8 @@ from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse_lazy
 from django.conf import settings
+import json
+
 
 
 
@@ -239,3 +286,58 @@ def newpass(request):
 def done(request):
     return render(request, 'Both/password_reset_complete.html')
 
+def chat_index(request):
+    user=request.user.profile
+    friends= user.friends.all()
+    context = {"user": user , "friends":friends}
+    return render (request , "Both/chat_index.html" , context)
+
+def detail(request, pk):
+    friend=Friend.objects.get(profile_id=pk)
+    user=request.user.profile
+    profile = Profile.objects.get(id = friend.profile.id)
+    chats=ChatMessage.objects.all()
+    rec_chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
+    rec_chats.update(seen=True)
+    form = ChatMessageForm
+    if request.method == "POST":
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+           chat_message=form.save(commit=False)
+           chat_message.msg_sender=user
+           chat_message.msg_receiver= profile
+           chat_message.save()
+           return redirect("detail", pk=friend.profile.id) 
+    context = {"friend" : friend , "form":form, "user":user ,"profile":profile ,"chats":chats,"num":rec_chats.count() }
+    return render (request , "Both/detail.html" , context)
+
+
+def sentMessages(request, pk):
+    user=request.user.profile
+    friend= Friend.objects.get(profile_id=pk)
+    profile = Profile.objects.get(id=friend.profile.id)
+    data= json.loads(request.body)
+    new_chat= data["msg"]
+    new_chat_message = ChatMessage.objects.create(body=new_chat,msg_sender=user, msg_receiver=profile, seen=False)
+    print(new_chat)
+    return JsonResponse(new_chat_message.body, safe=False)
+
+def receivedMessages(request, pk):
+    user= request.user.profile
+    friend= Friend.objects.get(profile_id=pk)
+    profile = Profile.objects.get(id=friend.profile.id)
+    arr=[]
+    chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
+    for chat in chats:
+        arr.append(chat.body)
+    return JsonResponse(arr , safe=False)
+
+
+def chatNotification(request):
+    user=request.user.profile
+    friends= user.friends.all()
+    arr=[]
+    for friend in friends:
+        chats=ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
+        arr.append(chats.count())
+    return JsonResponse(arr , safe=False)
