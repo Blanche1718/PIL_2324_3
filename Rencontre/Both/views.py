@@ -133,8 +133,8 @@ def edit_profile(request):
 
 
 def inscription_views(request):
-    if request.user.is_authenticated:
-        return redirect('profil')
+    #if request.user.is_authenticated:
+        #return redirect('profil')
     if request.method == 'POST':
         form = MyUserForm(request.POST)
         if form.is_valid():
