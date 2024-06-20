@@ -82,7 +82,7 @@ def edit_profile(request):
         age = request.POST.get('age', '')
         date_d_anniversaire= request.POST.get('date_d_anniversaire', '')
         profession= request.POST.get('profession', '')
-        genre = request.POST.get('genre', '')
+        gender = request.POST.get('gender', '')
         sex = request.POST.get('sex', '')
         Corpulence= request.POST.get('Corpulence', '')
         Couleur_de_peau = request.POST.get('Couleur_de_peau', '')
@@ -110,7 +110,7 @@ def edit_profile(request):
         profile.numero = numero
         profile.age = age
         profile.profession = profession
-        profile.genre = genre
+        profile.gender = gender
         profile.sex = sex 
         profile.Corpulence= Corpulence
         profile.Couleur_de_peau = Couleur_de_peau
@@ -185,22 +185,6 @@ def edit_preferences(request):
 
     return render(request, 'Both/preferences.html', {'form': form})
 
-
-
-@login_required
-def suggestions(request):
-    preferences = get_object_or_404(Preferences, user=request.user)
-    profiles = Profile.objects.filter(
-        age__gte=preferences.age_min,
-        age__lte=preferences.age_max,
-        taille__gte=preferences.taille_min,
-        taille__lte=preferences.taille_max,
-        Couleur_de_peau=preferences.teint_preference,
-        Corpulence=preferences.corpulence_preference,  
-        Localisation=preferences.localisation_preference,
-        genre='Feminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
-    )
-    return render(request, 'Both/suggestions.html', {'profiles': profiles})
 
 
 @login_required
@@ -340,3 +324,31 @@ def chatNotification(request):
         chats=ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
         arr.append(chats.count())
     return JsonResponse(arr , safe=False)
+
+from django.shortcuts import render
+from .models import Profile
+
+
+@login_required
+def suggestion_view(request):
+    current_user_profile = request.user.profile  # Récupérer le profil de l'utilisateur connecté
+    
+    if current_user_profile.gender == 'M':
+        suggested_profiles = Profile.objects.filter(gender='F').exclude(user=request.user)
+    elif current_user_profile.gender == 'F':
+        suggested_profiles = Profile.objects.filter(gender='M').exclude(user=request.user)
+    else:
+        suggested_profiles = Profile.objects.none()  # Aucune suggestion si le genre n'est pas défini correctement
+    
+    context = {
+        'suggested_profiles': suggested_profiles
+    }
+    
+    return render(request, 'Both/suggestions.html', context)
+
+def profile_detail_view(request, username):
+    profile = get_object_or_404(Profile, user__username=username)
+    context = {
+        'profile': profile
+    }
+    return render(request, 'Both/profile_detail.html', context)

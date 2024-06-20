@@ -1,7 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
     <title>Both/suggestion</title>
@@ -24,59 +26,31 @@
                 </ul>
             
             </nav>
-            <form class="menu_additionnel">
-                <img src="bx-menu.svg" alt="menu" class="bx-menu" onclick="deroulle_menu()">
-            </form>
         </header>
-        <section class="contient_suggestion">
-            <div class="horizontal-snap">
-                <section class="profile_suggestion">
-                    <aside class="s_profile">
-                        <div class="ph_s_profile">
-                            <h1 class="pourcentage_compatibilite">75%</h1>
-                        <img src="toto.jpg" alt="photo de profile suggérer" class="photo_profile">
-                        <form class="choix_sprofile">
-                            <button type="button"class="choix "><img src="bx-check.svg" alt="oui" class="i_oui"></button>
-                            <button type="button" class="choix"><img src="bx-x.svg" alt="non" class="i_non"></button>
-                            <button type="button" class="choix"><img src="bx-right-arrow-alt.svg" alt="passe" class="i_passe"></button>
-                        </form>
-                        </div>
-                        
-                    </aside>
-                    
-                    <article class="info_profile">
-                        <a href="#" class="plus_info_sprofile">!</a>
-                        <div class="age_sex">
-                            <p class="sex_sprofile"></p>
-                            <p class="age_sprofile"></p>
-                        </div>
-                        
-                        <p class="nom_sprofile"></p>
-                        <p class="prenom_sprofile"></p>
-                        <p class="description_sprofile"></p>
-                    </article>
-                    
-                </section>
-                <article class="additionnel_sprofile">
-                    
-                </article>
-            </div>
-        </section>
-    </div>
+        <html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilisateurs suggérés</title>
+</head>
+<body>
+    <h2>Utilisateurs suggérés</h2>
 
-    <script>
-        var nav_menu =document.getElementById("nav_menu")
-        nav_menu.style.maxHeight="0px"
-        function deroulle_menu() {
-            if (nav_menu.style.maxHeight=="0px") {
-                nav_menu.style.maxHeight="160px"
-            }
-            else
-            {
-                nav_menu.style.maxHeight="0px"
-            }
-            
-        }
-    </script>
+    <ul>
+        {% if suggested_profiles %}
+            {% for profile in suggested_profiles %}
+                <li>
+                    <a href="{% url 'profile_detail' profile.user.username %}">
+                        <strong>{{ profile.user.username }}</strong> 
+                        Email: {{ profile.user.email }} <br>
+                        <!-- Ajouter d'autres informations de profil comme la photo, l'âge, etc. -->
+                    </a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>Aucun utilisateur suggéré pour le moment.</li>
+        {% endif %}
+    </ul>
+</body>
+</html>
 </body>
 </html>
