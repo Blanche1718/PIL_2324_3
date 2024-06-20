@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <title>Both/suggestion</title>
+</head>
+<body>
+    <div class="grid">
+        <header>
+            <h1 class="logo_both">B</h1>
+            <!--<form class="recherche_block">
+                <input type="search" name="recherche_id" id="recherche_id" class="recherche_id" placeholder="Recherche">
+                <button type="submit" class="btn"><img src="bx-search.svg" alt="recherche" class="icon_recherche"/></button>
+                    <img src="bx-search.svg" alt="recherche" class="icon_recherche"/>
+            </form>-->
+            <nav > 
+                <ul class="navigation" id="nav_menu">
+                    <li class="NAV"><a href="{% url 'profil' %}" class="profil">Profile</a></li>
+                    <li class="NAV"><a href="#"  class="suggestion">Suggestion</a></li>
+                    <li class="NAV"><a href="{% url 'chats' %}" class="lien">Messagerie</a></li>
+                    <li class="NAV"><a href="#" class="invitation">Invitation</a></li>
+                </ul>
+            
+            </nav>
+        </header>
+        <html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilisateurs suggérés</title>
+</head>
+<body>
+    <h2>Utilisateurs suggérés</h2>
+
+    <ul>
+        {% if suggested_profiles %}
+            {% for profile in suggested_profiles %}
+                <li>
+                    <a href="{% url 'profile_detail' profile.user.username %}">
+                        <strong>{{ profile.user.username }}</strong> 
+                        Email: {{ profile.user.email }} <br>
+                        <!-- Ajouter d'autres informations de profil comme la photo, l'âge, etc. -->
+                    </a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>Aucun utilisateur suggéré pour le moment.</li>
+        {% endif %}
+    </ul>
+</body>
+</html>
+</body>
+</html>

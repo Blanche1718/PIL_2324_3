@@ -14,7 +14,7 @@ class Profile(models.Model):
     age = models.CharField(null= True , blank= True)
     date_d_anniversaire = models.DateField(null = True , blank= True)
     profession = models.CharField(max_length=20, null=True)
-    genre = models.CharField(max_length=20, null=True)
+    gender = models.CharField(max_length=10, choices=(('M', 'Masculin'), ('F', 'Féminin')), blank=True)
     sex = models.CharField(max_length=20 , null= True, blank=True)
     Corpulence = models.CharField(max_length=10 , null=True , blank=True)
     Couleur_de_peau = models.CharField(max_length= 20, null=True, blank=True)

@@ -89,7 +89,7 @@ def edit_profile(request):
         age = request.POST.get('age', '')
         date_d_anniversaire= request.POST.get('date_d_anniversaire', '')
         profession= request.POST.get('profession', '')
-        genre = request.POST.get('genre', '')
+        gender = request.POST.get('gender', '')
         sex = request.POST.get('sex', '')
         Corpulence= request.POST.get('Corpulence', '')
         Couleur_de_peau = request.POST.get('Couleur_de_peau', '')
@@ -117,7 +117,7 @@ def edit_profile(request):
         profile.numero = numero
         profile.age = age
         profile.profession = profession
-        profile.genre = genre
+        profile.gender = gender
         profile.sex = sex 
         profile.Corpulence= Corpulence
         profile.Couleur_de_peau = Couleur_de_peau
@@ -166,9 +166,10 @@ def index(request):
 def contact_views(request):
     return render(request, 'Both/contact.html')
 
-
-
-
+@login_required
+def profile_detail(request, user_id):
+    profile = get_object_or_404(Profile, id=user_id)
+    return render(request, 'Both/user_detail.html', {'profile': profile})
 
 
 

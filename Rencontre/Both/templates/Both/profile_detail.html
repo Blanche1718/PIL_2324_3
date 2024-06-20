@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails du profil</title>
+    <link rel="stylesheet" href="{% static 'Both/profile_detail.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="{% url 'suggestions' %}">Retour aux suggestions</a></li>
+                <!-- Ajoutez d'autres liens de navigation ici -->
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="profile-container">
+        <h2>Détails du profil de {{ profile.user.username }}</h2>
+
+        <p><span class="label">Nom complet:</span> {{ profile.user.get_full_name }}</p>
+        <p><span class="label">Email:</span> {{ profile.user.email }}</p>
+        <p><span class="label">Biographie:</span> <span class="bio">{{ profile.bio }}</span></p>
+        <p><span class="label">Numéro de téléphone:</span> {{ profile.numero }}</p>
+        {% if profile.image %}
+            <div class="photo">
+                <span class="label">Photo de profil:</span><br>
+                <img src="{{ profile.image.url }}" alt="Photo de profil de {{ profile.user.username }}">
+            </div>
+        {% endif %}
+        <p><span class="label">Âge:</span> {{ profile.age }}</p>
+        <p><span class="label">Date d'anniversaire:</span> {{ profile.date_d_anniversaire }}</p>
+        <p><span class="label">Profession:</span> {{ profile.profession }}</p>
+        <p><span class="label">Genre:</span> {{ profile.get_gender_display }}</p>
+        <p><span class="label">Sexe:</span> {{ profile.sex }}</p>
+        <p><span class="label">Corpulence:</span> {{ profile.Corpulence }}</p>
+        <p><span class="label">Couleur de peau:</span> {{ profile.Couleur_de_peau }}</p>
+        <p><span class="label">Localisation:</span> {{ profile.Localisation }}</p>
+        <p><span class="label">Taille:</span> {{ profile.taille }}</p>
+        <p><span class="label">Niveau de budget:</span> {{ profile.budget_level }}</p>
+        <p><span class="label">Cuisine préférée:</span> {{ profile.preferred_cuisine }}</p>
+    </div>
+</body>
+</html>
