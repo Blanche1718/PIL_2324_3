@@ -226,9 +226,6 @@ def done(request):
 
 
 
-
-
-@login_required
 def conversation_list(request):
     conversations = request.user.conversations.all()
     conversations_with_participants = []
@@ -241,14 +238,14 @@ def conversation_list(request):
     return render(request, 'Both/conversation_list.html', {'conversations_with_participants': conversations_with_participants})
 
 
-@login_required
+
 def conversation_detail(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
     messages = conversation.messages.all()
     form = MessageForm()
     return render(request, 'Both/conversation_detail.html', {'conversation': conversation, 'messages': messages, 'form': form})
 
-@login_required
+
 def send_message(request):
     if request.method == 'POST':
         conversation_id = request.POST.get('conversation_id')
