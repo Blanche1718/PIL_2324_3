@@ -5,32 +5,39 @@ from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
-from .form import MyUserForm, PreferencesForm,ChatMessageForm
-from .models import Preferences, Profile,ChatMessage,Friend
+from .form import MyUserForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from .models import Conversation, Message, Restaurant
+from .form import MessageForm
+from .models import  Profile
 from django.contrib.auth.views import LoginView
 from PIL import Image   
-
-
-from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from .form import MyUserForm, PreferencesForm
-from .models import Preferences, Profile , Restaurant
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
-from django.core.mail import send_mail
+from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib.auth.views import PasswordResetView
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse_lazy
 from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+import json
+
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'  # Template pour la vue de connexion
@@ -159,80 +166,9 @@ def index(request):
 def contact_views(request):
     return render(request, 'Both/contact.html')
 
-@login_required
-def edit_preferences(request):
-    preferences, created = Preferences.objects.get_or_create(
-        user=request.user,
-        defaults={
-            'age_min': 18,
-            'age_max': 99,
-            'taille_min': 150,
-            'taille_max': 200,
-            'teint_preference': 'Clair',
-            'corpulence_preference': 'Normal',
-            'localisation_preference': '',
-            'genre_preference': 'Féminin',
-        }
-    )
-
-    if request.method == 'POST':
-        form = PreferencesForm(request.POST, instance=preferences)
-        if form.is_valid():
-            form.save()
-            return redirect('suggestions')
-    else:
-        form = PreferencesForm(instance=preferences)
-
-    return render(request, 'Both/preferences.html', {'form': form})
 
 
 
-@login_required
-def suggestions(request):
-    preferences = get_object_or_404(Preferences, user=request.user)
-    profiles = Profile.objects.filter(
-        age__gte=preferences.age_min,
-        age__lte=preferences.age_max,
-        taille__gte=preferences.taille_min,
-        taille__lte=preferences.taille_max,
-        Couleur_de_peau=preferences.teint_preference,
-        Corpulence=preferences.corpulence_preference,  
-        Localisation=preferences.localisation_preference,
-        genre='Feminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
-    )
-    return render(request, 'Both/suggestions.html', {'profiles': profiles})
-
-
-@login_required
-def profile_detail(request, user_id):
-    profile = get_object_or_404(Profile, id=user_id)
-    return render(request, 'Both/user_detail.html', {'profile': profile})
-
-
-
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.shortcuts import render, redirect
-from django.conf import settings
-from django.contrib.auth.views import PasswordResetView
-from django.core.mail import send_mail
-from django.urls import reverse_lazy
-from django.conf import settings
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse_lazy
-from django.conf import settings
-import json
 
 
 
@@ -285,58 +221,38 @@ def newpass(request):
 def done(request):
     return render(request, 'Both/password_reset_complete.html')
 
-def chat_index(request):
-    user=request.user.profile
-    friends= user.friends.all()
-    context = {"user": user , "friends":friends}
-    return render (request , "Both/chat_index.html" , context)
-
-def detail(request, pk):
-    friend=Friend.objects.get(profile_id=pk)
-    user=request.user.profile
-    profile = Profile.objects.get(id = friend.profile.id)
-    chats=ChatMessage.objects.all()
-    rec_chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
-    rec_chats.update(seen=True)
-    form = ChatMessageForm
-    if request.method == "POST":
-        form = ChatMessageForm(request.POST)
-        if form.is_valid():
-           chat_message=form.save(commit=False)
-           chat_message.msg_sender=user
-           chat_message.msg_receiver= profile
-           chat_message.save()
-           return redirect("detail", pk=friend.profile.id) 
-    context = {"friend" : friend , "form":form, "user":user ,"profile":profile ,"chats":chats,"num":rec_chats.count() }
-    return render (request , "Both/detail.html" , context)
 
 
-def sentMessages(request, pk):
-    user=request.user.profile
-    friend= Friend.objects.get(profile_id=pk)
-    profile = Profile.objects.get(id=friend.profile.id)
-    data= json.loads(request.body)
-    new_chat= data["msg"]
-    new_chat_message = ChatMessage.objects.create(body=new_chat,msg_sender=user, msg_receiver=profile, seen=False)
-    print(new_chat)
-    return JsonResponse(new_chat_message.body, safe=False)
-
-def receivedMessages(request, pk):
-    user= request.user.profile
-    friend= Friend.objects.get(profile_id=pk)
-    profile = Profile.objects.get(id=friend.profile.id)
-    arr=[]
-    chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
-    for chat in chats:
-        arr.append(chat.body)
-    return JsonResponse(arr , safe=False)
 
 
-def chatNotification(request):
-    user=request.user.profile
-    friends= user.friends.all()
-    arr=[]
-    for friend in friends:
-        chats=ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
-        arr.append(chats.count())
-    return JsonResponse(arr , safe=False)
+
+
+@login_required
+def conversation_list(request):
+    conversations = request.user.conversations.all()
+    conversations_with_participants = []
+    for conversation in conversations:
+        participant = conversation.participants.exclude(id=request.user.id).first()
+        conversations_with_participants.append({
+            'conversation': conversation,
+            'participant_name': participant.username if participant else 'N/A'
+        })
+    return render(request, 'Both/conversation_list.html', {'conversations_with_participants': conversations_with_participants})
+
+
+@login_required
+def conversation_detail(request, conversation_id):
+    conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
+    messages = conversation.messages.all()
+    form = MessageForm()
+    return render(request, 'Both/conversation_detail.html', {'conversation': conversation, 'messages': messages, 'form': form})
+
+@login_required
+def send_message(request):
+    if request.method == 'POST':
+        conversation_id = request.POST.get('conversation_id')
+        message_content = request.POST.get('message_content')
+        conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
+        message = Message.objects.create(conversation=conversation, sender=request.user, content=message_content)
+        return JsonResponse({'status': 'success', 'message': message.content, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')})
+    return JsonResponse({'status': 'error'})

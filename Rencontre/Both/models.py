@@ -20,7 +20,6 @@ class Profile(models.Model):
     Couleur_de_peau = models.CharField(max_length= 20, null=True, blank=True)
     Localisation = models.CharField(max_length=30, null=True , blank= True)
     taille = models.CharField(max_length=20, null=True, blank= True)
-    friends = models.ManyToManyField('Friend', related_name="my_friends")
     budget_level = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     preferred_cuisine = models.CharField(max_length=100, null=True)  # Peut être un choix limité via un champ ChoiceField si nécessaire
     is_first_login = models.BooleanField(default=True)
@@ -38,36 +37,13 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+class Conversation(models.Model):
+    participants = models.ManyToManyField(User, related_name='conversations')
+
+class Message(models.Model):
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
-
-class Friend(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-
-    def __str__(self) :
-        return self.profile.user.username
-
-class ChatMessage(models.Model):
-    body = models.TextField()
-    msg_sender=models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="msg_sender" )
-    msg_receiver=models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="msg_receiver" )
-    seen = models.BooleanField(default=False)
-
-
-    def __str__(self) :
-        return self.body
-
-
-class Preferences(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    age_min = models.PositiveIntegerField()
-    age_max = models.PositiveIntegerField()
-    taille_min = models.PositiveIntegerField()
-    taille_max = models.PositiveIntegerField()
-    teint_preference = models.CharField(max_length=20, choices=[('noir', 'Noir'), ('clair', 'Clair')] , default='Noir')
-    corpulence_preference = models.CharField(max_length=10, choices=[('gros', 'Gros'), ('mince', 'Mince'), ('musclé', 'Musclé'), ('normal', 'Normal')] , default='mince')
-    localisation_preference = models.CharField(max_length=50 , default='')
-
-
-def __str__(self):
-     return f"{self.user.username}'s Preferences"

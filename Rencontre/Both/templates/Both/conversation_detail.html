@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Conversation</h2>
+<div id="messages">
+    {% for message in messages %}
+        <div class="message">
+            <strong>{{ message.sender.username }}:</strong> {{ message.content }} <em>{{ message.timestamp }}</em>
+        </div>
+    {% endfor %}
+</div>
+<form id="message-form" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Envoyer</button>
+</form>
+<script>
+    $('#message-form').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '{% url "send_message" %}',
+            method: 'POST',
+            data: {
+                'conversation_id': '{{ conversation.id }}',
+                'message_content': $('#id_content').val(),
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status == 'success') {
+                    $('#messages').append('<div class="message"><strong>Vous:</strong> ' + response.message + ' <em>' + response.timestamp + '</em></div>');
+                    $('#id_content').val('');
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

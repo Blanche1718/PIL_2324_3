@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.models import User
-from .models import Profile , Preferences,ChatMessage
+from .models import Message
 from django.forms import ModelForm
 
 class LoginForm(AuthenticationForm):
@@ -37,17 +37,7 @@ class MyUserForm(UserCreationForm):
 
 
 
-
-class PreferencesForm(forms.ModelForm):
+class MessageForm(forms.ModelForm):
     class Meta:
-        model = Preferences
-        fields = ['age_min', 'age_max', 'taille_min', 'taille_max', 'teint_preference', 'corpulence_preference', 'localisation_preference']
-
-
-
-
-class ChatMessageForm(ModelForm):
-    body=forms.CharField(widget=forms.Textarea(attrs={"class":"forms", "rows":3, "placeholder":"Type message here"}))
-    class Meta:
-        model = ChatMessage
-        fields=["body",]
+        model = Message
+        fields = ['content']

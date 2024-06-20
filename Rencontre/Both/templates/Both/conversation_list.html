@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Vos Conversations</h2>
+<ul>
+    {% for item in conversations_with_participants %}
+        <li><a href="{% url 'conversation_detail' item.conversation.id %}">Conversation avec {{ item.participant_name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
