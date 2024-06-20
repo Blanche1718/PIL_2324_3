@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -5,6 +6,9 @@ def user_directory_path(instance, filename):
     # This function defines the upload path for user's profile image
     return f'user_{instance.user.id}/{filename}'
 
+
+from django.db import models
+from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -37,24 +41,26 @@ class Restaurant(models.Model):
         return self.name
 
 
-
-
 class Friend(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, related_name='friendship_creator_set', on_delete=models.CASCADE)
+    friend = models.ForeignKey(Profile, related_name='friend_set', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) :
-        return self.profile.user.username
+    def _str_(self):
+        return f'{self.profile} est ami avec {self.friend}'
+
+    class Meta:
+        unique_together = ('profile', 'friend')
 
 class ChatMessage(models.Model):
+    msg_sender = models.ForeignKey(Profile, related_name='sent_messages', on_delete=models.CASCADE)
+    msg_receiver = models.ForeignKey(Profile, related_name='received_messages', on_delete=models.CASCADE)
     body = models.TextField()
-    msg_sender=models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="msg_sender" )
-    msg_receiver=models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="msg_receiver" )
+    timestamp = models.DateTimeField(auto_now_add=True )
     seen = models.BooleanField(default=False)
 
-
-    def __str__(self) :
-        return self.body
-
+    def _str_(self):
+        return f'Message de {self.msg_sender} à {self.msg_receiver} : {self.body[:20]}'
 
 class Preferences(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -69,3 +75,14 @@ class Preferences(models.Model):
 
 def __str__(self):
      return f"{self.user.username}'s Preferences"
+
+
+class Restaurant(models.Model):
+    name = models.CharField(max_length=255)
+    preferred_cuisine = models.CharField(max_length=100)
+    budget_level = models.CharField(max_length=50)
+    website_url = models.URLField(blank=True)  # Champ pour l'URL du site officiel
+    image_url = models.URLField(blank=True)    # Champ pour l'URL de l'image du restaurant
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,7 @@
+
+<p>Voulez-vous vous connecter avec {{ target_profile.user.username }} ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="response" value="yes">Oui</button>
+    <button type="submit" name="response" value="no">Non</button>
+</form>
