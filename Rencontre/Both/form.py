@@ -38,22 +38,6 @@ class MyUserForm(UserCreationForm):
 
 
 
-class PreferencesForm(forms.ModelForm):
-    class Meta:
-        model = Preferences
-        fields = ['age_min', 'age_max', 'taille_min', 'taille_max', 'teint_preference', 'corpulence_preference', 'localisation_preference']
-
-
-
-
-class ChatMessageForm(ModelForm):
-    body=forms.CharField(widget=forms.Textarea(attrs={"class":"forms", "rows":3, "placeholder":"Type message here"}))
-    class Meta:
-        model = ChatMessage
-        fields=["body",]
-
-
-
 class RestaurantSearchForm(forms.Form):
     budget = forms.DecimalField(max_digits=8, decimal_places=2, required=True)
     food_preference = forms.CharField(max_length=100, required=True)
