@@ -261,6 +261,16 @@ def conversation_detail(request, conversation_id):
     return render(request, 'Both/conversation_detail.html', {'conversation': conversation_detail, 'messages': messages, 'form': form})
 
 
+@login_required
+def accept_suggestion(request, profile_id):
+    other_user_profile = get_object_or_404(Profile, id=profile_id)
+    other_user = other_user_profile.user
+    current_user = request.user
+    # Créer une conversation entre les deux utilisateurs
+    conversation = Conversation.create_conversation(current_user, other_user)
+    return JsonResponse({'status': 'success', 'conversation_id': conversation.id})
+
+
 def send_message(request):
     if request.method == 'POST':
         conversation_id = request.POST.get('conversation_id')
@@ -269,6 +279,8 @@ def send_message(request):
         message = Message.objects.create(conversation=conversation, sender=request.user, content=message_content)
         return JsonResponse({'status': 'success', 'message': message.content, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')})
     return JsonResponse({'status': 'error'})
+
+
 
 
 @login_required
@@ -288,15 +300,6 @@ def suggestion_view(request):
     
     return render(request, 'Both/suggestions.html', context)
 
-@login_required
-def accept_suggestion(request, profile_id):
-    other_user_profile = get_object_or_404(Profile, id=profile_id)
-    other_user = other_user_profile.user
-    current_user = request.user
-    # Créer une conversation entre les deux utilisateurs
-    conversation = Conversation.create_conversation(current_user, other_user)
-    return JsonResponse({'status': 'success', 'conversation_id': conversation.id})
-
 
 
 def profile_detail_view(request, username):
@@ -305,3 +308,4 @@ def profile_detail_view(request, username):
         'profile': profile
     }
     return render(request, 'Both/profile_detail.html', context)
+

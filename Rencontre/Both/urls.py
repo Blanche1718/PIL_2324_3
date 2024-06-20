@@ -23,7 +23,10 @@ urlpatterns = [
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),
     path('done/',views.done , name='password_reset_complete'),
-    path('accept_suggestions/', views.accept_suggestion, name='accept_suggestions')
+    path('accept_suggestions/<int:profile_id>/', views.accept_suggestion, name='accept_suggestions'),
+    path('conversation_list/', views.conversation_list,name='conversation_list'),
+    path('conversation/<int:conversation_id>/' , views.conversation_detail, name='conversation_detail'),
+    path('send_message/', views.send_message, name='send_message'),
 ]
 
 

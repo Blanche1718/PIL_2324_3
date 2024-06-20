@@ -30,20 +30,21 @@ class Profile(models.Model):
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
+
 class Conversation(models.Model):
     participants = models.ManyToManyField(User, related_name='conversations')
 
-    def save(self, *args, **kwargs):
-        if not self.pk and self.participants.count() > 2:
-            raise ValueError("A conversation can only have two participants.")
-        super().save(*args, **kwargs)
-
     @classmethod
     def create_conversation(cls, user1, user2):
-        conversation = cls()
-        conversation.save()
+        # Créer une nouvelle conversation entre user1 et user2
+        conversation = cls.objects.create()
         conversation.participants.add(user1, user2)
         return conversation
+
+    def _str_(self):
+        participant_names = ', '.join([user.username for user in self.participants.all()])
+        return f"Conversation between {participant_names}"
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')

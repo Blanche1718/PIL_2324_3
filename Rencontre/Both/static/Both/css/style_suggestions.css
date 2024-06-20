@@ -1,0 +1,11 @@
+/* custom_styles.css */
+
+body {
+    background-color: #fce4ec; /* Couleur de fond rose clair */
+}
+
+h1.logo_both {
+    color: #ff69b4; /* Couleur rose pour le logo */
+}
+
+/* Ajoute d'autres styles CSS personnalisés au besoin */
