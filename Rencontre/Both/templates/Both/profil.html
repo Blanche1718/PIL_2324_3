@@ -17,7 +17,7 @@
                 <ul>
                     <li><img src="logo.png" class="logo"></li>
                     <li><a href="#">Menu</a></li>
-                    <li><a href="#">À propos</a></li>
+                    <li class="NAV"><a href="{% url 'chats' %}" class="lien">Messagerie</a></li>
                     <li><a href="#">Historique</a></li>
                     <li>{% if user.is_authenticated %}
                     <form method="POST"  action="{% url 'logout' %}">
