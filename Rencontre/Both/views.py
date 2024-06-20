@@ -1,3 +1,4 @@
+from mailbox import Message
 from typing import Any
 from urllib import request
 from django.contrib.auth.decorators import login_required
@@ -5,39 +6,31 @@ from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
-from .form import MyUserForm
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from .models import Conversation, Message, Restaurant
-from .form import MessageForm
-from .models import  Profile
+from .form import MessageForm, MyUserForm
 from django.contrib.auth.views import LoginView
 from PIL import Image   
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.shortcuts import render, redirect
-from django.conf import settings
-from django.contrib.auth.views import PasswordResetView
-from django.core.mail import send_mail
-from django.urls import reverse_lazy
-from django.conf import settings
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse_lazy
-from django.conf import settings
-import json
 
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from .form import MyUserForm
+from .models import  Conversation, Profile , Restaurant
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import send_mail
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.views import LoginView
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'  # Template pour la vue de connexion
@@ -65,20 +58,29 @@ def view_profile(request):
 
 
 def restaurant_suggestions(request):
-    if request.method == 'POST':
-        budget_level = request.POST.get('budget_level')
-        preferred_cuisine = request.POST.get(' preferred_cuisine')
-        
-        return redirect('suggestions', budget_level=budget_level,  preferred_cuisine= preferred_cuisine)
-    
-    return render(request, 'Both/resto_preferences.html')
+    if request.method == 'GET':
+        cuisine = request.GET.get('cuisine')
+        budget = request.GET.get('budget')
 
-def show_results(request, budget_level, preferred_cuisine):
-    restaurants = Restaurant.objects.filter(budget_level=budget_level, preferred_cuisine=preferred_cuisine)
+        # Filtrer les restaurants en fonction du type de cuisine et du niveau de budget
+        restaurants = Restaurant.objects.filter(preferred_cuisine=cuisine, budget_level=budget)
 
-    print(restaurants)  
-    
-    return render(request, 'Both/liste_resto.html', {'restaurants': restaurants})
+        context = {
+            'restaurants': restaurants,
+            'cuisine': cuisine,
+            'budget': budget,
+        }
+        return render(request, 'Both/recherche_restaurants.html', context)
+
+    return render(request, 'Both/recherche_restaurants.html')
+
+def liste_restaurants(request):
+    restaurants = Restaurant.objects.all()
+    context = {
+        'restaurants': restaurants
+    }
+    return render(request, 'Both/liste_restaurants.html', context)
+
 
 @login_required
 def edit_profile(request):
@@ -166,10 +168,39 @@ def index(request):
 def contact_views(request):
     return render(request, 'Both/contact.html')
 
+
+
+
 @login_required
 def profile_detail(request, user_id):
     profile = get_object_or_404(Profile, id=user_id)
     return render(request, 'Both/user_detail.html', {'profile': profile})
+
+
+
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib.auth.views import PasswordResetView
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse_lazy
+from django.conf import settings
+import json
 
 
 
@@ -194,23 +225,7 @@ def password_reset_request(request):
                     reset_url = f"{'https'}://{'domain'}/reset/{'uid'}/{'token'}"
 
                     subject = "Réinitialisation du mot de passe demandée"
-                    message = (
-                f"Bonjour,\n\n"
-                f"Vous avez demandé à réinitialiser votre mot de passe pour le site Both. "
-                f"Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n\n"
-                f"{reset_url}\n\n"
-                f"Si vous n'avez pas fait cette demande, veuillez ignorer cet e-mail.\n\n"
-                f"Merci,\nL'équipe Both"
-                )
-                    
-                    
-                    
-                    c = user.email
-                    try:
-                        send_mail(subject,message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
-                    except Exception as e:
-                        return HttpResponse(f"Erreur lors de l'envoi de l'email : {e}")
-                    return redirect("password_reset_confirm")
+                  
     password_reset_form = PasswordResetForm()
     return render(request, 'Both/password_reset_form.html', context={"form":password_reset_form})
 
@@ -254,3 +269,30 @@ def send_message(request):
         message = Message.objects.create(conversation=conversation, sender=request.user, content=message_content)
         return JsonResponse({'status': 'success', 'message': message.content, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')})
     return JsonResponse({'status': 'error'})
+from django.shortcuts import render
+from .models import Profile
+
+
+@login_required
+def suggestion_view(request):
+    current_user_profile = request.user.profile  # Récupérer le profil de l'utilisateur connecté
+    
+    if current_user_profile.gender == 'M':
+        suggested_profiles = Profile.objects.filter(gender='F').exclude(user=request.user)
+    elif current_user_profile.gender == 'F':
+        suggested_profiles = Profile.objects.filter(gender='M').exclude(user=request.user)
+    else:
+        suggested_profiles = Profile.objects.none()  # Aucune suggestion si le genre n'est pas défini correctement
+    
+    context = {
+        'suggested_profiles': suggested_profiles
+    }
+    
+    return render(request, 'Both/suggestions.html', context)
+
+def profile_detail_view(request, username):
+    profile = get_object_or_404(Profile, user__username=username)
+    context = {
+        'profile': profile
+    }
+    return render(request, 'Both/profile_detail.html', context)

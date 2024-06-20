@@ -16,15 +16,13 @@ urlpatterns = [
     path('suggestions/', views.suggestion_view, name='suggestions'), 
     path('profile/<str:username>/', views.profile_detail_view, name='profile_detail'),
     path('restaurant/', views.restaurant_suggestions, name='restaurant'),
-    path('results/<str:budget_level>/<str:preferred_cuisine>/', views.show_results, name='suggestions'),
+    path('liste_restaurants/', views.liste_restaurants, name='liste_restaurants'),
+    path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),
     path('done/',views.done , name='password_reset_complete'),
-    path('conversation_list/', views.conversation_list, name='conversation_list'),
-    path('conversations/<int:conversation_id>/', views.conversation_detail, name='conversation_detail'),
-    path('send_message/', views.send_message, name='send_message'),
 ]
 
 

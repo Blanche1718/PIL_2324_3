@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Restaurants</title>
+</head>
+<body>
+    <h1>Recherche de Restaurants</h1>
+    <form action="{% url 'restaurant' %}" method="GET">
+        <label for="cuisine">Choisir le type de cuisine :</label>
+        <select name="cuisine" id="cuisine">
+            <option value="italienne">Cuisine italienne</option>
+            <option value="francaise">Cuisine française</option>
+            <option value="japonaise">Cuisine japonaise</option>
+        </select><br><br>
+
+        <label for="budget">Choisir le niveau de budget :</label>
+        <select name="budget" id="budget">
+            <option value="bon_marche">Bon marché</option>
+            <option value="modere">Modéré</option>
+            <option value="chic">Chic</option>
+        </select><br><br>
+
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if restaurants %}
+        <h2>Résultats de la recherche</h2>
+        <ul>
+            {% for restaurant in restaurants %}
+                <li>{{ restaurant.name }} - Cuisine: {{ restaurant.preferred_cuisine }}, Budget: {{ restaurant.budget_level }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
