@@ -41,3 +41,14 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ['content']
+
+
+
+from .models import Restaurant
+
+class RechercheRestaurantForm(forms.Form):
+    BUDGET_CHOICES = Restaurant.BUDGET_CHOICES
+    CUISINE_CHOICES = Restaurant.CUISINE_CHOICES
+
+    budget = forms.ChoiceField(choices=BUDGET_CHOICES, label='Niveau de budget')
+    cuisine = forms.ChoiceField(choices=CUISINE_CHOICES, label='Type de cuisine')

@@ -15,14 +15,15 @@ urlpatterns = [
     path('logout/',LogoutView.as_view(next_page='login' ) ,name='logout'), 
     path('suggestions/', views.suggestion_view, name='suggestions'), 
     path('profile/<str:username>/', views.profile_detail_view, name='profile_detail'),
-    path('restaurant/', views.restaurant_suggestions, name='restaurant'),
-    path('liste_restaurants/', views.liste_restaurants, name='liste_restaurants'),
     path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),
     path('done/',views.done , name='password_reset_complete'),
+    path('formulaire-recherche/', views.formulaire_recherche, name='formulaire_recherche'),
+    path('recherche-restaurants/', views.recherche_restaurants, name='recherche_restaurants'),
+
 ]
 
 

@@ -27,15 +27,29 @@ class Profile(models.Model):
         return self.user.username
 
 
+
 class Restaurant(models.Model):
+    BUDGET_CHOICES = [
+        ('bon_marche', 'Bon marché'),
+        ('modere', 'Modéré'),
+        ('chic', 'Chic'),
+    ]
+    
+    CUISINE_CHOICES = [
+        ('italienne', 'Cuisine italienne'),
+        ('francaise', 'Cuisine française'),
+        ('japonaise', 'Cuisine japonaise'),
+    ]
+
     name = models.CharField(max_length=255)
-    preferred_cuisine = models.CharField(max_length=100)
-    budget_level = models.CharField(max_length=50)
+    preferred_cuisine = models.CharField(max_length=100, choices=CUISINE_CHOICES)
+    budget_level = models.CharField(max_length=50, choices=BUDGET_CHOICES)
     website_url = models.URLField(blank=True)  # Champ pour l'URL du site officiel
     image_url = models.URLField(blank=True)    # Champ pour l'URL de l'image du restaurant
 
     def __str__(self):
         return self.name
+    
 
 class Conversation(models.Model):
     participants = models.ManyToManyField(User, related_name='conversations')

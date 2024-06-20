@@ -56,29 +56,35 @@ def view_profile(request):
     return render(request, 'Both/profil.html', {'profile': profile})
 
 
-def restaurant_suggestions(request):
+from .form import RechercheRestaurantForm
+from .models import Restaurant
+
+def formulaire_recherche(request):
+    form = RechercheRestaurantForm()
+    return render(request, 'Both/formulaire_recherche.html', {'form': form})
+
+def recherche_restaurants(request):
     if request.method == 'GET':
-        cuisine = request.GET.get('cuisine')
-        budget = request.GET.get('budget')
+        form = RechercheRestaurantForm(request.GET)
 
-        # Filtrer les restaurants en fonction du type de cuisine et du niveau de budget
-        restaurants = Restaurant.objects.filter(preferred_cuisine=cuisine, budget_level=budget)
+        if form.is_valid():
+            budget = form.cleaned_data['budget']
+            cuisine = form.cleaned_data['cuisine']
 
-        context = {
-            'restaurants': restaurants,
-            'cuisine': cuisine,
-            'budget': budget,
-        }
-        return render(request, 'Both/recherche_restaurants.html', context)
+            # Filtrer les restaurants en fonction du type de cuisine et du niveau de budget
+            restaurants = Restaurant.objects.filter(preferred_cuisine=cuisine, budget_level=budget)
 
-    return render(request, 'Both/recherche_restaurants.html')
+            context = {
+                'restaurants': restaurants,
+                'cuisine': cuisine,
+                'budget': budget,
+            }
+            return render(request, 'Both/resultats_recherche.html', context)
 
-def liste_restaurants(request):
-    restaurants = Restaurant.objects.all()
-    context = {
-        'restaurants': restaurants
-    }
-    return render(request, 'Both/liste_restaurants.html', context)
+    else:
+        form = RechercheRestaurantForm()
+
+    return render(request, 'Both/formulaire_recherche.html', {'form': form})
 
 
 @login_required

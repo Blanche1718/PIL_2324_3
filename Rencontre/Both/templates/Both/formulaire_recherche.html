@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Recherche</title>
+</head>
+<body>
+    <h1>Recherche de Restaurants</h1>
+    <form action="{% url 'recherche_restaurants' %}" method="GET">
+        {{ form.as_p }}
+        <button type="submit">Rechercher</button>
+    </form>
+</body>
+</html>

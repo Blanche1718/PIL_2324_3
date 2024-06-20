@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats de la recherche de Restaurants</title>
+    <style>
+        .restaurant {
+            margin-bottom: 20px;
+        }
+        .restaurant img {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Résultats de la recherche</h1>
+    <p>Vous avez recherché : Cuisine {{ cuisine }} et Budget {{ budget }}</p>
+    {% if restaurants %}
+        {% for restaurant in restaurants %}
+            <div class="restaurant">
+                <h3>{{ restaurant.name }}</h3>
+                <p>Cuisine: {{ restaurant.get_preferred_cuisine_display }}</p>
+                <p>Budget: {{ restaurant.get_budget_level_display }}</p>
+                {% if restaurant.website_url %}
+                    <p><a href="{{ restaurant.website_url }}" target="_blank">Site Web</a></p>
+                {% endif %}
+                {% if restaurant.image_url %}
+                    <a href="{{ restaurant.website_url }}" target="_blank">
+                        <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}">
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Aucun restaurant trouvé pour les critères spécifiés.</p>
+    {% endif %}
+</body>
+</html>
+    
