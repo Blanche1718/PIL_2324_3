@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recherche de restaurants</title>
+</head>
+<body>
+    <h1>Recherche de restaurants</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Rechercher</button>
+    </form>
+    
+    <p><a href="{% url 'set_user_preferences' %}">Définir mes préférences alimentaires</a></p>
+</body>
+</html>

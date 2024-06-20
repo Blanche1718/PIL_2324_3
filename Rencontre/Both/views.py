@@ -1,6 +1,16 @@
-from django.shortcuts import render, redirect, get_object_or_404
+
+from typing import Any
+from urllib import request
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpRequest, JsonResponse
+from django.http.response import HttpResponse as HttpResponse
+from django.shortcuts import render , redirect , get_object_or_404
+#from django.contrib.auth.forms import UserCreationForm
+from .form import MyUserForm, PreferencesForm,ChatMessageForm
+from .models import Preferences, Profile,ChatMessage,Friend
+from django.contrib.auth.views import LoginView
+from PIL import Image   
+from .form import RestaurantSearchForm
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, PasswordResetView
 from django.contrib.auth.forms import PasswordResetForm
@@ -79,17 +89,119 @@ def view_profile(request):
     return render(request, 'Both/profil.html', {'profile': profile})
 
 
-def restaurant_suggestions(request):
+def set_user_preferences(request):
     if request.method == 'POST':
-        budget_level = request.POST.get('budget_level')
-        preferred_cuisine = request.POST.get('preferred_cuisine')
-        return redirect('suggestions', budget_level=budget_level, preferred_cuisine=preferred_cuisine)
-    return render(request, 'Both/resto_preferences.html')
+
+        form = RestaurantSearchForm(request.POST)
+        if form.is_valid():
+            food_preference = form.cleaned_data['food_preference']
+            
+            # Enregistrer les préférences de l'utilisateur s'il n'en a pas encore
+            user_preferences, created = Restaurant.objects.get_or_create(user=request.user)
+            user_preferences.food_preference = food_preference
+            user_preferences.save()
+
+            return render(request, 'Both/preferences_saved.html')
+    else:
+        form = RestaurantSearchForm()
+    
+    return render(request, 'Both/set_preferences.html', {'form': form})
+
+@login_required
+def restaurant_search(request):
+    user_preferences = get_object_or_404(Restaurant, user=request.user)
+    
+    if request.method == 'POST':
+        form = RestaurantSearchForm(request.POST)
+        if form.is_valid():
+            budget = form.cleaned_data['budget']
+            
+            # Recherche des restaurants en fonction du budget et des préférences alimentaires de l'utilisateur
+            restaurants = Restaurant.objects.filter(price_range__lte=budget, cuisine_type__icontains=user_preferences.food_preference)
+            
+            return render(request, 'restaurant_search_results.html', {'restaurants': restaurants})
+    else:
+        form = RestaurantSearchForm()
+    
+    return render(request, 'restaurant_search.html', {'form': form})
 
 
-def show_results(request, budget_level, preferred_cuisine):
-    restaurants = Restaurant.objects.filter(budget_level=budget_level, preferred_cuisine=preferred_cuisine)
-    return render(request, 'Both/liste_resto.html', {'restaurants': restaurants})
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        # Récupérer les données du formulaire POST
+        bio = request.POST.get('bio', '')
+        numero = request.POST.get('numero', '')
+        age = request.POST.get('age', '')
+        date_d_anniversaire= request.POST.get('date_d_anniversaire', '')
+        profession= request.POST.get('profession', '')
+        genre = request.POST.get('genre', '')
+        sex = request.POST.get('sex', '')
+        Corpulence= request.POST.get('Corpulence', '')
+        Couleur_de_peau = request.POST.get('Couleur_de_peau', '')
+        Localisation = request.POST.get('age', '')
+        taille = request.POST.get('age', '')
+
+    user = request.user
+
+    if request.method == 'POST':
+        # Mettre à jour les informations de l'utilisateur à partir des données POST
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.email = request.POST['email']
+        user.save()
+
+        #messages.success(request, 'Votre profil a été mis à jour avec succès!')
+
+        # Récupérer le profil de l'utilisateur connecté
+        profile = Profile.objects.get(user=user)
+
+        # Mettre à jour les champs du profil avec les nouvelles données
+        profile.bio = bio
+        profile.Localisation = Localisation
+        profile.date_d_anniversaire = date_d_anniversaire
+        profile.numero = numero
+        profile.age = age
+        profile.profession = profession
+        profile.genre = genre
+        profile.sex = sex 
+        profile.Corpulence= Corpulence
+        profile.Couleur_de_peau = Couleur_de_peau
+        profile.taille = taille
+
+        if 'image' in request.FILES:
+            profile.image = request.FILES['image']
+            
+            
+        profile.save()
+
+        return redirect('profil')
+    context = {
+        'user': user,
+    }
+
+
+    return render(request, 'Both/modif.html', context)
+
+
+
+def inscription_views(request):
+    #if request.user.is_authenticated:
+        #return redirect('profil')
+    if request.method == 'POST':
+        form = MyUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+
+        return redirect('login')
+    else:
+        form = MyUserForm()
+    context = {
+        'form': form,
+        
+    }
+    return render(request, 'Both/inscription.html', context)
 
 
 class CustomLoginView(LoginView):

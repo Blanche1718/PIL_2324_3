@@ -11,23 +11,35 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True)
-    numero = models.CharField(max_length=15, blank=True)
-    age = models.IntegerField(blank=True, null=True)
-    date_d_anniversaire = models.DateField(blank=True, null=True)
-    profession = models.CharField(max_length=50, blank=True)
-    genre = models.CharField(max_length=10, choices=(('Masculin', 'Masculin'), ('Feminin', 'Feminin')), blank=True)
-    sex = models.CharField(max_length=10, blank=True)
-    corpulence = models.CharField(max_length=50, blank=True)
-    couleur_de_peau = models.CharField(max_length=50, blank=True)
-    localisation = models.CharField(max_length=100, blank=True)
-    taille = models.FloatField(blank=True, null=True)
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
-    friends = models.ManyToManyField('self', through='Friend', symmetrical=False, related_name='related_to')
 
-    def _str_(self):
+    bio = models.CharField(max_length=100)
+    numero= models.CharField( blank=True, null=True)
+    image = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
+    age = models.CharField(null= True , blank= True)
+    date_d_anniversaire = models.DateField(null = True , blank= True)
+    profession = models.CharField(max_length=20, null=True)
+    genre = models.CharField(max_length=20, null=True)
+    sex = models.CharField(max_length=20 , null= True, blank=True)
+    Corpulence = models.CharField(max_length=10 , null=True , blank=True)
+    Couleur_de_peau = models.CharField(max_length= 20, null=True, blank=True)
+    Localisation = models.CharField(max_length=30, null=True , blank= True)
+    taille = models.CharField(max_length=20, null=True, blank= True)
+    friends = models.ManyToManyField('self', through='Friend', symmetrical=False, related_name='related_to')
+    food_preference = models.CharField(max_length=100,blank=True, null=True)
+    def __str__(self):
         return self.user.username
+
+
+class Restaurant(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    photo_url = models.URLField(blank=True, null=True)
+    cuisine_type = models.CharField(max_length=100,blank=True, null=True)
+    price_range = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
 
 class Friend(models.Model):
     profile = models.ForeignKey(Profile, related_name='friendship_creator_set', on_delete=models.CASCADE)
