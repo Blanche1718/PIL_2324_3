@@ -25,12 +25,6 @@ urlpatterns = [
     path('notification',views.chatNotification, name='notification'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('connect_request/',views.respond_to_suggestion, name='suggestion_reponse'),
-
-
-
-
-
-
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),

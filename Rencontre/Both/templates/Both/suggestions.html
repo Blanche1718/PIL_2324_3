@@ -20,37 +20,40 @@
                 </ul>
             </nav>
             <form class="menu_additionnel">
-                <img src="bx-menu.svg" alt="menu" class="bx-menu" onclick="deroulle_menu()">
+                <img src="{% static 'Both/img/bx-menu.svg' %}" alt="menu" class="bx-menu" onclick="deroulle_menu()">
             </form>
         </header>
         <section class="contient_suggestion">
             <div class="horizontal-snap">
-                {% for profile in profiles %}
-                <section id="profile_{{ profile.id }}" class="profile_suggestion">
-                    <aside class="s_profile">
-                        <div class="ph_s_profile">
-                            <img src="{% if profile.image %}{{ profile.image.url }}{% else %}placeholder.jpg{% endif %}" alt="Photo" class="photo_profile">
-                            <form class="choix_sprofile">
-                                <button type="button" class="choix"><img src="bx-check.svg" alt="oui" class="i_oui"></button>
-                                <button type="button" class="choix" onclick="rejectProfile('{{ profile.id }}')"><img src="bx-x.svg" alt="non" class="i_non"></button>
-                                <button type="button" class="choix" onclick="nextProfile('{{ profile.id }}')"><img src="bx-right-arrow-alt.svg" alt="passe" class="i_passe"></button>
-                            </form>
-                        </div>
-                    </aside>
-                    <article class="info_profile">
-                        <a href="#" class="plus_info_sprofile">!</a>
-                        <div class="age_sex">
-                            <p class="sex_sprofile">{{ profile.genre }}</p>
-                            <p class="age_sprofile">{{ profile.age }}</p>
-                        </div>
-                        <p class="nom_sprofile">{{ profile.user.last_name }}</p>
-                        <p class="prenom_sprofile">{{ profile.user.first_name }}</p>
-                        <p class="description_sprofile">{{ profile.bio }}</p>
-                    </article>
-                
-                    {% include 'Both/connect_request.html' %}
-                </section>
-                {% endfor %}
+                {% if has_profiles %}
+                    {% for profile in profiles %}
+                        <section id="profile_{{ profile.id }}" class="profile_suggestion">
+                            <aside class="s_profile">
+                                <div class="ph_s_profile">
+                                    <img src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'Both/img/placeholder.jpg' %}{% endif %}" alt="Photo" class="photo_profile">
+                                    <form class="choix_sprofile">
+                                        <button type="button" class="choix"><img src="{% static 'Both/img/bx-check.svg' %}" alt="oui" class="i_oui"></button>
+                                        <button type="button" class="choix" onclick="rejectProfile('{{ profile.id }}')"><img src="{% static 'Both/img/bx-x.svg' %}" alt="non" class="i_non"></button>
+                                        <button type="button" class="choix" onclick="nextProfile('{{ profile.id }}')"><img src="{% static 'Both/img/bx-right-arrow-alt.svg' %}" alt="passe" class="i_passe"></button>
+                                    </form>
+                                </div>
+                            </aside>
+                            <article class="info_profile">
+                                <a href="#" class="plus_info_sprofile">!</a>
+                                <div class="age_sex">
+                                    <p class="sex_sprofile">{{ profile.genre }}</p>
+                                    <p class="age_sprofile">{{ profile.age }}</p>
+                                </div>
+                                <p class="nom_sprofile">{{ profile.user.last_name }}</p>
+                                <p class="prenom_sprofile">{{ profile.user.first_name }}</p>
+                                <p class="description_sprofile">{{ profile.bio }}</p>
+                            </article>
+                            {% include 'Both/connect_request.html' %}
+                        </section>
+                    {% endfor %}
+                {% else %}
+                    <p class="no_profiles">Il n'y a plus de profils à proposer pour le moment.</p>
+                {% endif %}
                 <article class="additionnel_sprofile">
     
                 </article>
@@ -75,13 +78,15 @@
             var currentProfile = document.getElementById("profile_" + profileId);
             currentProfile.style.display = "none";
 
-            
             var nextProfile = currentProfile.nextElementSibling;
             if (nextProfile) {
                 nextProfile.style.display = "block";  // Afficher le profil suivant
             } else {
-                
-                
+                // Afficher un message lorsqu'il n'y a plus de profils
+                var noProfilesMessage = document.createElement('p');
+                noProfilesMessage.className = 'no_profiles';
+                noProfilesMessage.textContent = "Il n'y a plus de profils à proposer pour le moment.";
+                document.querySelector('.contient_suggestion').appendChild(noProfilesMessage);
             }
         }
 
@@ -89,8 +94,7 @@
             // Cacher le profil actuel
             var currentProfile = document.getElementById("profile_" + profileId);
             currentProfile.style.display = "none";
-            
-            
+            // Ajouter une action pour gérer le rejet du profil si nécessaire
         }
     </script>
 </body>

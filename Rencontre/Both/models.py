@@ -23,7 +23,7 @@ class Profile(models.Model):
     couleur_de_peau = models.CharField(max_length=50, blank=True)
     localisation = models.CharField(max_length=100, blank=True)
     taille = models.FloatField(blank=True, null=True)
-    image = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
     friends = models.ManyToManyField('self', through='Friend', symmetrical=False, related_name='related_to')
 
     def _str_(self):

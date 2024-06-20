@@ -18,6 +18,12 @@ from django.urls import reverse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+
+
+
 
 
 class CustomPasswordResetView(PasswordResetView):
@@ -111,8 +117,8 @@ def inscription_views(request):
     if request.method == 'POST':
         form = MyUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+           user= form.save()
+        return redirect('login')
     else:
         form = MyUserForm()
     return render(request, 'Both/inscription.html', {'form': form})
@@ -226,43 +232,51 @@ def detail(request, pk):
 @csrf_exempt
 @require_POST
 @login_required
-def sentMessages(request, pk):
-    try:
-        user_profile = request.user.profile
-        friend = get_object_or_404(Profile, id=pk)
-        data = json.loads(request.body)
-        new_chat = data.get("msg", "").strip()
-        if not new_chat:
-            return JsonResponse({"error": "Message vide."}, status=400)
-
-        new_chat_message = ChatMessage.objects.create(
-            body=new_chat,
-            msg_sender=user_profile,
-            msg_receiver=friend,
-            seen=False
-        )
-        return JsonResponse({"message": "Message envoyé avec succès."})
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Données JSON invalides."}, status=400)
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
-
-
-@csrf_exempt
-@require_POST
-@login_required
 def receivedMessages(request, pk):
     try:
         user_profile = request.user.profile
-        friend = get_object_or_404(Profile, id=pk)
-        chats = ChatMessage.objects.filter(msg_sender=friend, msg_receiver=user_profile)
+        profile = get_object_or_404(Profile, id=pk)
+        
+        # Récupère les messages reçus de ce profil
+        chats = ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user_profile)
         messages = [chat.body for chat in chats]
+        
         if not messages:
             return JsonResponse({"messages": [], "info": "Aucun message reçu."})
-        return JsonResponse({"messages": messages})
+        
+        return JsonResponse({"messages": messages}, status=200)
+    except Profile.DoesNotExist:
+        return JsonResponse({"error": "Profil non trouvé."}, status=404)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)@csrf_exempt
+@require_POST
+@login_required
+def sentMessages(request, pk):
+    try:
+        user_profile = request.user.profile
+        profile = get_object_or_404(Profile, id=pk)
+        
+        # Charge les données JSON
+        data = json.loads(request.body)
+        new_chat = data.get("msg", "").strip()
+        
+        if not new_chat:
+            return JsonResponse({"error": "Message vide."}, status=400)
+        
+        # Crée un nouveau message
+        new_chat_message = ChatMessage.objects.create(
+            body=new_chat,
+            msg_sender=user_profile,
+            msg_receiver=profile,
+            seen=False
+        )
+        return JsonResponse({"message": new_chat_message.body}, status=201)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Données JSON invalides."}, status=400)
+    except Profile.DoesNotExist:
+        return JsonResponse({"error": "Profil non trouvé."}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-
 
 @login_required
 def suggestions(request):
@@ -277,7 +291,8 @@ def suggestions(request):
         localisation=preferences.localisation_preference,
         genre='Feminin' if request.user.profile.genre == 'Masculin' else 'Masculin'
     )
-    return render(request, 'Both/suggestions.html', {'profiles': profiles})
+    has_profiles=profiles.exists
+    return render(request, 'Both/suggestions.html', {'has_profiles': has_profiles})
 
 
 @login_required
@@ -290,17 +305,16 @@ def respond_to_suggestion(request, profile_id):
 
         if response == "yes":
             # Créer une relation Friend si elle n'existe pas déjà
-            friend, created = Friend.objects.get_or_create(profile=user)
-            friend_of_profile, created = Friend.objects.get_or_create(profile=profile)
+            friend, created = Friend.objects.get_or_create(profile=user, friend=profile)
 
             # Ajouter les amis mutuels
-            user.friends.add(friend_of_profile)
+            user.friends.add(profile)
             profile.friends.add(friend)
 
             # Vérifiez si l'autre utilisateur a aussi accepté la suggestion
             if profile.friends.filter(id=user.id).exists():
                 # Les deux utilisateurs ont accepté, la messagerie peut être débloquée
-                pass
+                messages.success(request, "Vous etes maintenant amis!!!")
 
         # Rediriger vers la page des suggestions après avoir enregistré la réponse
         return redirect('suggestions')
@@ -330,6 +344,6 @@ def chatNotification(request):
     friends = user.friends.all()
     arr = []
     for friend in friends:
-        chats = ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
+        chats = ChatMessage.objects.filter(msg_sender=friend, msg_receiver=user, seen=False)
         arr.append(chats.count())
     return JsonResponse(arr, safe=False)
