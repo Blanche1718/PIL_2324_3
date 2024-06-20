@@ -5,8 +5,7 @@ from django.http import HttpRequest, JsonResponse
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render , redirect , get_object_or_404
 #from django.contrib.auth.forms import UserCreationForm
-from .form import MyUserForm, PreferencesForm,ChatMessageForm
-from .models import Preferences, Profile,ChatMessage,Friend
+from .form import MyUserForm
 from django.contrib.auth.views import LoginView
 from PIL import Image   
 
@@ -14,8 +13,8 @@ from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .form import MyUserForm, PreferencesForm
-from .models import Preferences, Profile , Restaurant
+from .form import MyUserForm
+from .models import  Profile , Restaurant
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
@@ -168,31 +167,6 @@ def index(request):
 def contact_views(request):
     return render(request, 'Both/contact.html')
 
-@login_required
-def edit_preferences(request):
-    preferences, created = Preferences.objects.get_or_create(
-        user=request.user,
-        defaults={
-            'age_min': 18,
-            'age_max': 99,
-            'taille_min': 150,
-            'taille_max': 200,
-            'teint_preference': 'Clair',
-            'corpulence_preference': 'Normal',
-            'localisation_preference': '',
-            'genre_preference': 'Féminin',
-        }
-    )
-
-    if request.method == 'POST':
-        form = PreferencesForm(request.POST, instance=preferences)
-        if form.is_valid():
-            form.save()
-            return redirect('suggestions')
-    else:
-        form = PreferencesForm(instance=preferences)
-
-    return render(request, 'Both/preferences.html', {'form': form})
 
 
 
@@ -250,23 +224,7 @@ def password_reset_request(request):
                     reset_url = f"{'https'}://{'domain'}/reset/{'uid'}/{'token'}"
 
                     subject = "Réinitialisation du mot de passe demandée"
-                    message = (
-                f"Bonjour,\n\n"
-                f"Vous avez demandé à réinitialiser votre mot de passe pour le site Both. "
-                f"Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n\n"
-                f"{reset_url}\n\n"
-                f"Si vous n'avez pas fait cette demande, veuillez ignorer cet e-mail.\n\n"
-                f"Merci,\nL'équipe Both"
-                )
-                    
-                    
-                    
-                    c = user.email
-                    try:
-                        send_mail(subject,message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
-                    except Exception as e:
-                        return HttpResponse(f"Erreur lors de l'envoi de l'email : {e}")
-                    return redirect("password_reset_confirm")
+                  
     password_reset_form = PasswordResetForm()
     return render(request, 'Both/password_reset_form.html', context={"form":password_reset_form})
 
@@ -278,61 +236,6 @@ def newpass(request):
 def done(request):
     return render(request, 'Both/password_reset_complete.html')
 
-def chat_index(request):
-    user=request.user.profile
-    friends= user.friends.all()
-    context = {"user": user , "friends":friends}
-    return render (request , "Both/chat_index.html" , context)
-
-def detail(request, pk):
-    friend=Friend.objects.get(profile_id=pk)
-    user=request.user.profile
-    profile = Profile.objects.get(id = friend.profile.id)
-    chats=ChatMessage.objects.all()
-    rec_chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
-    rec_chats.update(seen=True)
-    form = ChatMessageForm
-    if request.method == "POST":
-        form = ChatMessageForm(request.POST)
-        if form.is_valid():
-           chat_message=form.save(commit=False)
-           chat_message.msg_sender=user
-           chat_message.msg_receiver= profile
-           chat_message.save()
-           return redirect("detail", pk=friend.profile.id) 
-    context = {"friend" : friend , "form":form, "user":user ,"profile":profile ,"chats":chats,"num":rec_chats.count() }
-    return render (request , "Both/detail.html" , context)
-
-
-def sentMessages(request, pk):
-    user=request.user.profile
-    friend= Friend.objects.get(profile_id=pk)
-    profile = Profile.objects.get(id=friend.profile.id)
-    data= json.loads(request.body)
-    new_chat= data["msg"]
-    new_chat_message = ChatMessage.objects.create(body=new_chat,msg_sender=user, msg_receiver=profile, seen=False)
-    print(new_chat)
-    return JsonResponse(new_chat_message.body, safe=False)
-
-def receivedMessages(request, pk):
-    user= request.user.profile
-    friend= Friend.objects.get(profile_id=pk)
-    profile = Profile.objects.get(id=friend.profile.id)
-    arr=[]
-    chats=ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
-    for chat in chats:
-        arr.append(chat.body)
-    return JsonResponse(arr , safe=False)
-
-
-def chatNotification(request):
-    user=request.user.profile
-    friends= user.friends.all()
-    arr=[]
-    for friend in friends:
-        chats=ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
-        arr.append(chats.count())
-    return JsonResponse(arr , safe=False)
 
 from django.shortcuts import render
 from .models import Profile
@@ -360,4 +263,4 @@ def profile_detail_view(request, username):
     context = {
         'profile': profile
     }
-    return render(request, 'profile_detail.html', context)
+    return render(request, 'Both/profile_detail.html', context)

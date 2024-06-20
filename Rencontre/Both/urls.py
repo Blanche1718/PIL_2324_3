@@ -12,33 +12,20 @@ urlpatterns = [
     path('inscription/',views.inscription_views,name='inscription'),
     path('login/',LoginView.as_view(template_name = 'Both/login.html', next_page='suggestions' ) , name='login'),
     path('contact/',views.contact_views,name='contact'),
-    path('logout/',LogoutView.as_view(next_page='login' ) ,name='logout'),
-    path('preferences/', views.edit_preferences, name='edit_preferences'),  
+    path('logout/',LogoutView.as_view(next_page='login' ) ,name='logout'), 
     path('suggestions/', views.suggestion_view, name='suggestions'), 
     path('profile/<str:username>/', views.profile_detail_view, name='profile_detail'),
     path('restaurant/', views.restaurant_suggestions, name='restaurant'),
     path('liste_restaurants/', views.liste_restaurants, name='liste_restaurants'),
     path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
-    path('chats/', views.chat_index, name='chats'),
-    path('friend/<str:pk>', views.detail, name='detail'),
-    path('sent_msg/<str:pk>',views.sentMessages, name='sent_msg'),
-    path('rec_msg/<str:pk>',views.receivedMessages, name='rec_msg'),
-    path('notification',views.chatNotification, name='notification'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
-
-
-
-
-
-
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),
     path('done/',views.done , name='password_reset_complete'),
-
-
-
-
-    
 ]
+
+
+
     
+
