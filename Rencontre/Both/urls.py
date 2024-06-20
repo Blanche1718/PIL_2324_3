@@ -15,7 +15,6 @@ urlpatterns = [
     path('logout/',LogoutView.as_view(next_page='login' ) ,name='logout'),
     path('preferences/', views.edit_preferences, name='edit_preferences'),  
     path('suggestions/', views.suggestions, name='suggestions'), 
-    path('profile/<int:user_id>/', views.profile_detail, name='profile_detail'),
     path('restaurant/', views.restaurant_suggestions, name='restaurant'),
     path('results/<str:budget_level>/<str:preferred_cuisine>/', views.show_results, name='suggestions'),
     path('add_user/', lambda request: HttpResponse('Page blanche vide'), name='add_user'),
@@ -25,7 +24,7 @@ urlpatterns = [
     path('rec_msg/<str:pk>',views.receivedMessages, name='rec_msg'),
     path('notification',views.chatNotification, name='notification'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('reponse/',views.respond_to_suggestion, name='suggestion_reponse'),
+    path('connect_request/',views.respond_to_suggestion, name='suggestion_reponse'),
 
 
 
