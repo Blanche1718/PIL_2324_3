@@ -265,7 +265,7 @@ def conversation_detail(request, conversation_id):
 def accept_suggestion(request, profile_id):
     other_user_profile = get_object_or_404(Profile, id=profile_id)
     other_user = other_user_profile.user
-    current_user = request.user
+    current_user = request.user 
     # Créer une conversation entre les deux utilisateurs
     conversation = Conversation.create_conversation(current_user, other_user)
     return JsonResponse({'status': 'success', 'conversation_id': conversation.id})

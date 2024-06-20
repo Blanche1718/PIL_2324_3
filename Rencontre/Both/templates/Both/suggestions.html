@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suggestions d'utilisateurs - Both</title>
+    <title>Suggestions D'amis - Both</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'Both/css/style_suggestions.css' %}">
     
     <style>
-        /* Styles CSS personnalisés */
         body {
             background-color: #fce4ec; /* Couleur de fond rose clair */
         }
@@ -19,12 +18,12 @@
         }
 
         .btn-pink {
-            background-color: #ff69b4; /* Couleur rose pour les boutons */
+            background-color: #ff69b4; 
             border-color: #ff69b4;
-            color:black; /* Texte blanc pour les boutons */
+            color:black; 
         }
         .btn-pink:hover {
-            background-color: #e6498e; /* Couleur rose plus foncée au survol des boutons */
+            background-color: #e6498e; 
             border-color:palevioletred;
         }
 
@@ -60,7 +59,7 @@
                         <a class="nav-link" href="#">Suggestion</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Messagerie</a>
+                        <a class="nav-link" href="{% url 'conversation_list'%}">Messagerie</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'restaurant' %}">Restaurant_Date</a>
