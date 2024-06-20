@@ -21,19 +21,17 @@ class Profile(models.Model):
     Localisation = models.CharField(max_length=30, null=True , blank= True)
     taille = models.CharField(max_length=20, null=True, blank= True)
     friends = models.ManyToManyField('Friend', related_name="my_friends")
-    budget_level = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    preferred_cuisine = models.CharField(max_length=100, null=True)  # Peut être un choix limité via un champ ChoiceField si nécessaire
-    is_first_login = models.BooleanField(default=True)
+    food_preference = models.CharField(max_length=100,blank=True, null=True)
     def __str__(self):
         return self.user.username
 
 
 class Restaurant(models.Model):
-    name = models.CharField(max_length=255)
-    preferred_cuisine = models.CharField(max_length=100)
-    budget_level = models.CharField(max_length=50)
-    website_url = models.URLField(blank=True)  # Champ pour l'URL du site officiel
-    image_url = models.URLField(blank=True)    # Champ pour l'URL de l'image du restaurant
+    name = models.CharField(max_length=200, blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    photo_url = models.URLField(blank=True, null=True)
+    cuisine_type = models.CharField(max_length=100,blank=True, null=True)
+    price_range = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
 
     def __str__(self):
         return self.name

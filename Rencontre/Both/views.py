@@ -9,6 +9,7 @@ from .form import MyUserForm, PreferencesForm,ChatMessageForm
 from .models import Preferences, Profile,ChatMessage,Friend
 from django.contrib.auth.views import LoginView
 from PIL import Image   
+from .form import RestaurantSearchForm
 
 
 from django.contrib.auth.decorators import login_required
@@ -57,21 +58,43 @@ def view_profile(request):
     return render(request, 'Both/profil.html', {'profile': profile})
 
 
-def restaurant_suggestions(request):
+def set_user_preferences(request):
     if request.method == 'POST':
-        budget_level = request.POST.get('budget_level')
-        preferred_cuisine = request.POST.get(' preferred_cuisine')
-        
-        return redirect('suggestions', budget_level=budget_level,  preferred_cuisine= preferred_cuisine)
-    
-    return render(request, 'Both/resto_preferences.html')
+        form = RestaurantSearchForm(request.POST)
+        if form.is_valid():
+            food_preference = form.cleaned_data['food_preference']
+            
+            # Enregistrer les préférences de l'utilisateur s'il n'en a pas encore
+            user_preferences, created = Restaurant.objects.get_or_create(user=request.user)
+            user_preferences.food_preference = food_preference
+            user_preferences.save()
 
-def show_results(request, budget_level, preferred_cuisine):
-    restaurants = Restaurant.objects.filter(budget_level=budget_level, preferred_cuisine=preferred_cuisine)
-
-    print(restaurants)  
+            return render(request, 'Both/preferences_saved.html')
+    else:
+        form = RestaurantSearchForm()
     
-    return render(request, 'Both/liste_resto.html', {'restaurants': restaurants})
+    return render(request, 'Both/set_preferences.html', {'form': form})
+
+@login_required
+def restaurant_search(request):
+    user_preferences = get_object_or_404(Restaurant, user=request.user)
+    
+    if request.method == 'POST':
+        form = RestaurantSearchForm(request.POST)
+        if form.is_valid():
+            budget = form.cleaned_data['budget']
+            
+            # Recherche des restaurants en fonction du budget et des préférences alimentaires de l'utilisateur
+            restaurants = Restaurant.objects.filter(price_range__lte=budget, cuisine_type__icontains=user_preferences.food_preference)
+            
+            return render(request, 'Both/restaurant_search_results.html', {'restaurants': restaurants})
+    else:
+        form = RestaurantSearchForm()
+    
+    return render(request, 'Both/restaurant_search.html', {'form': form})
+
+
+
 
 @login_required
 def edit_profile(request):
@@ -139,6 +162,7 @@ def inscription_views(request):
         form = MyUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+
         return redirect('login')
     else:
         form = MyUserForm()

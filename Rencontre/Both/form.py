@@ -51,3 +51,9 @@ class ChatMessageForm(ModelForm):
     class Meta:
         model = ChatMessage
         fields=["body",]
+
+
+
+class RestaurantSearchForm(forms.Form):
+    budget = forms.DecimalField(max_digits=8, decimal_places=2, required=True)
+    food_preference = forms.CharField(max_length=100, required=True)

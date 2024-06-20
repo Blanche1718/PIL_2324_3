@@ -19,9 +19,9 @@
             <nav > 
                 <ul class="navigation" id="nav_menu">
                     <li class="NAV"><a href="{% url 'profil' %}" class="profil">Profile</a></li>
-                    <li class="NAV"><a href="{#}" class="suggestion">Suggestion</a></li>
+                    <li class="NAV"><a href="{% url 'suggestions' %}" class="suggestion">Suggestion</a></li>
                     <li class="NAV"><a href="{% url 'chats' %}" class="lien">Messagerie</a></li>
-                    <li class="NAV"><a href="#" class="invitation">Invitation</a></li>
+                    <li class="NAV"><a href="{% url 'Restaurant' %}" class="invitation">Date</a></li>
                 </ul>
             
             </nav>
@@ -48,13 +48,13 @@
                     <article class="info_profile">
                         <a href="#" class="plus_info_sprofile">!</a>
                         <div class="age_sex">
-                            <p class="sex_sprofile"></p>
-                            <p class="age_sprofile"></p>
+                            <p class="sex_sprofile">{{ profile.sex }}</p>
+                            <p class="age_sprofile">{{ profile.age }}</p>
                         </div>
                         
-                        <p class="nom_sprofile"></p>
-                        <p class="prenom_sprofile"></p>
-                        <p class="description_sprofile"></p>
+                        <p class="nom_sprofile">{{ profile.user.first_name }}</p>
+                        <p class="prenom_sprofile">{{ profile.user.last_name }}</p>
+                        <p class="description_sprofile">{{ profile.bio }}</p>
                     </article>
                     
                 </section>
