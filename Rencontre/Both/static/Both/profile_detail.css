@@ -7,37 +7,20 @@ body {
 
 .navbar {
     background-color: #ff9eb5;
-    padding: 10px 0;
 }
 
-.navbar .container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start; /* Aligne les éléments de la barre en haut */
-    height: 100%; /* Prend toute la hauteur de la barre */
+.navbar-vertical {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.nav-links {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.nav-links li {
-    margin-bottom: 10px; /* Espacement entre les liens */
-}
-
-.nav-links li a {
-    display: block; /* Affiche les liens comme des blocs */
-    text-decoration: none;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 8px 15px; /* Espacement interne */
+.navbar-vertical .nav-link {
+    color: #343a40; /* couleur de texte sombre pour les liens */
 }
 
 .profile-container {
-    max-width: 800px;
-    margin: 20px auto;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
@@ -49,21 +32,4 @@ body {
     border-bottom: 2px solid #ff9eb5;
     padding-bottom: 5px;
     margin-bottom: 20px;
-}
-
-.profile-container .label {
-    font-weight: bold;
-}
-
-.profile-container .photo {
-    margin-top: 10px;
-}
-
-.profile-container .photo img {
-    max-width: 100%;
-    border-radius: 50%;
-}
-
-.profile-container .bio {
-    white-space: pre-line;
 }

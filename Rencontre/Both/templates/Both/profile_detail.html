@@ -9,15 +9,13 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <ul class="nav-links">
+            <ul>
                 <li><a href="{% url 'suggestions' %}">Retour aux suggestions</a></li>
-                <!-- Ajoutez d'autres liens de navigation ici -->
-                <li><a href="#">Link 1</a></li>
-                <li><a href="#">Link 2</a></li>
-                <li><a href="#">Link 3</a></li>
+                <!-- Ajoute d'autres liens de navigation si nécessaire -->
             </ul>
         </div>
     </nav>
+
     <div class="profile-container">
         <h2>Détails du profil de {{ profile.user.username }}</h2>
 

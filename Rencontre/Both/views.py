@@ -58,20 +58,29 @@ def view_profile(request):
 
 
 def restaurant_suggestions(request):
-    if request.method == 'POST':
-        budget_level = request.POST.get('budget_level')
-        preferred_cuisine = request.POST.get(' preferred_cuisine')
-        
-        return redirect('suggestions', budget_level=budget_level,  preferred_cuisine= preferred_cuisine)
-    
-    return render(request, 'Both/resto_preferences.html')
+    if request.method == 'GET':
+        cuisine = request.GET.get('cuisine')
+        budget = request.GET.get('budget')
 
-def show_results(request, budget_level, preferred_cuisine):
-    restaurants = Restaurant.objects.filter(budget_level=budget_level, preferred_cuisine=preferred_cuisine)
+        # Filtrer les restaurants en fonction du type de cuisine et du niveau de budget
+        restaurants = Restaurant.objects.filter(preferred_cuisine=cuisine, budget_level=budget)
 
-    print(restaurants)  
-    
-    return render(request, 'Both/liste_resto.html', {'restaurants': restaurants})
+        context = {
+            'restaurants': restaurants,
+            'cuisine': cuisine,
+            'budget': budget,
+        }
+        return render(request, 'Both/recherche_restaurants.html', context)
+
+    return render(request, 'Both/recherche_restaurants.html')
+
+def liste_restaurants(request):
+    restaurants = Restaurant.objects.all()
+    context = {
+        'restaurants': restaurants
+    }
+    return render(request, 'Both/liste_restaurants.html', context)
+
 
 @login_required
 def edit_profile(request):
@@ -351,4 +360,4 @@ def profile_detail_view(request, username):
     context = {
         'profile': profile
     }
-    return render(request, 'Both/profile_detail.html', context)
+    return render(request, 'profile_detail.html', context)
