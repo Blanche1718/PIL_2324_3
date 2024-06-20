@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Détails du Profil</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body style="background-color: #ADD8E6;">
+    <div class="container">
+        <h2>{{ profile.user.username }}</h2>
+        <p>{{ profile.bio }}</p>
+        <p>Numéro: {{ profile.numero }}</p>
+        <p>Âge: {{ profile.age }}</p>
+        <p>Date d'anniversaire: {{ profile.date_d_anniversaire }}</p>
+        <p>Profession: {{ profile.profession }}</p>
+        <p>Genre: {{ profile.genre }}</p>
+        <p>Sexe: {{ profile.sex }}</p>
+        <p>Lieu de travail: {{ profile.lieu_de_travail }}</p>
+        <p>Corpulence: {{ profile.Corpulence }}</p>
+        <p>Couleur de peau: {{ profile.Couleur_de_peau }}</p>
+        <p>Localisation: {{ profile.Localisation }}</p>
+        <p>Secteur d'activité: {{ profile.Secteur_d_activite }}</p>
+        <p>Taille: {{ profile.taille }}</p>
+        <a href="#" class="btn btn-success">Ajouter</a>
+        <a href="{% url 'suggestions' %}" class="btn btn-danger">Ghoster</a>
+    </div>
+</body>
+</html>
