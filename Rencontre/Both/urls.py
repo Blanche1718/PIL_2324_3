@@ -23,6 +23,7 @@ urlpatterns = [
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),
     path('done/',views.done , name='password_reset_complete'),
+    path('accept_suggestions/', views.accept_suggestion, name='accept_suggestions')
 ]
 
 

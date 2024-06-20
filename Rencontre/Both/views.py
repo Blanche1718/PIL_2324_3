@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .form import MyUserForm
-from .models import  Conversation, Profile , Restaurant
+from .models import  Conversation, Profile, Restaurant
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
@@ -255,10 +255,10 @@ def conversation_list(request):
 
 
 def conversation_detail(request, conversation_id):
-    conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
-    messages = conversation.messages.all()
+    conversation_detail = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
+    messages = conversation_detail.messages.all()
     form = MessageForm()
-    return render(request, 'Both/conversation_detail.html', {'conversation': conversation, 'messages': messages, 'form': form})
+    return render(request, 'Both/conversation_detail.html', {'conversation': conversation_detail, 'messages': messages, 'form': form})
 
 
 def send_message(request):
@@ -269,8 +269,6 @@ def send_message(request):
         message = Message.objects.create(conversation=conversation, sender=request.user, content=message_content)
         return JsonResponse({'status': 'success', 'message': message.content, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')})
     return JsonResponse({'status': 'error'})
-from django.shortcuts import render
-from .models import Profile
 
 
 @login_required
@@ -289,6 +287,17 @@ def suggestion_view(request):
     }
     
     return render(request, 'Both/suggestions.html', context)
+
+@login_required
+def accept_suggestion(request, profile_id):
+    other_user_profile = get_object_or_404(Profile, id=profile_id)
+    other_user = other_user_profile.user
+    current_user = request.user
+    # Créer une conversation entre les deux utilisateurs
+    conversation = Conversation.create_conversation(current_user, other_user)
+    return JsonResponse({'status': 'success', 'conversation_id': conversation.id})
+
+
 
 def profile_detail_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)

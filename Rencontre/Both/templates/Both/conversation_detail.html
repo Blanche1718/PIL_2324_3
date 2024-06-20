@@ -1,37 +1,41 @@
-{% extends 'base.html' %}
+{% extends 'Both/base.html' %}
 
 {% block content %}
 <h2>Conversation</h2>
 <div id="messages">
     {% for message in messages %}
-        <div class="message">
-            <strong>{{ message.sender.username }}:</strong> {{ message.content }} <em>{{ message.timestamp }}</em>
-        </div>
+    <div class="message">
+        <strong>{{ message.sender.username }}:</strong> {{ message.content }} <em>{{ message.timestamp }}</em>
+    </div>
     {% endfor %}
 </div>
-<form id="message-form" method="post">
+<form id="messageForm">
     {% csrf_token %}
-    {{ form.as_p }}
+    <input type="hidden" name="conversation_id" value="{{ conversation.id }}">
+    <textarea name="message_content" id="message_content" required></textarea>
     <button type="submit">Envoyer</button>
 </form>
+
 <script>
-    $('#message-form').on('submit', function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: '{% url "send_message" %}',
-            method: 'POST',
-            data: {
-                'conversation_id': '{{ conversation.id }}',
-                'message_content': $('#id_content').val(),
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-                if (response.status == 'success') {
-                    $('#messages').append('<div class="message"><strong>Vous:</strong> ' + response.message + ' <em>' + response.timestamp + '</em></div>');
-                    $('#id_content').val('');
-                }
-            }
-        });
+document.getElementById('messageForm').onsubmit = function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch("{% url 'send_message' %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    }).then(response => response.json()).then(data => {
+        if (data.status === 'success') {
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message';
+            newMessage.innerHTML = `<strong>${ request.user.username }:</strong> ${data.message} <em>${data.timestamp}</em>`;
+            document.getElementById('messages').appendChild(newMessage);
+            document.getElementById('message_content').value = '';
+        }
     });
+};
+
 </script>
 {% endblock %}
