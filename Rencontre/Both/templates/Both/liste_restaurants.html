@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Restaurants</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: palevioletred; 
+            font-family: Arial, sans-serif; /* Police générique */
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333; /* Couleur de titre foncé */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f8f9fa; 
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+
+        li:hover {
+            background-color: #f5f5f5; /* Fond gris clair au survol */
+        }
+
+        li::before {
+            content: "\2022"; 
+            color: lightcoral; 
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Liste des Restaurants</h1>
+        <ul class="list-group">
+            {% for restaurant in restaurants %}
+                <li class="list-group-item">
+                    {{ restaurant.name }} - Cuisine: {{ restaurant.preferred_cuisine }}, Budget: {{ restaurant.budget_level }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

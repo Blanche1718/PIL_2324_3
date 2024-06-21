@@ -1,45 +1,97 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suggestions d'utilisateurs - Both</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Suggestions D'amis - Both</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'Both/css/style_suggestions.css' %}">
+    
+    <style>
+        body {
+            background-color: #fce4ec; /* Couleur de fond rose clair */
+        }
+
+        h1.logo_both {
+            color:palevioletred; /* Couleur rose pour le logo */
+        }
+
+        .btn-pink {
+            background-color: #ff69b4; 
+            border-color: #ff69b4;
+            color:black; 
+        }
+        .btn-pink:hover {
+            background-color: #e6498e; 
+            border-color:palevioletred;
+        }
+
+        .navbar {
+            background-color: #ff69b4; /* Fond rose pour la barre de navigation */
+        }
+        .navbar-brand {
+            color:black; /* Texte blanc pour le logo */
+            font-weight: bold;
+        }
+        .navbar-nav .nav-link {
+            color:black; /* Texte blanc pour les liens */
+            font-weight: bold;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #e6498e; /* Couleur rose plus foncée au survol des liens */
+        }
+    </style>
 </head>
 <body>
-    <div class="grid">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Both</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profil' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Suggestion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'conversation_list'%}">Messagerie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'restaurant' %}">Restaurant_Date</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
         <header>
             <h1 class="logo_both">Both</h1>
-            <nav> 
-                <ul class="navigation" id="nav_menu">
-                    <li class="NAV"><a href="{% url 'profil' %}" class="profil">Profile</a></li>
-                    <li class="NAV"><a href="#" class="suggestion">Suggestion</a></li>
-                    <li class="NAV"><a href="{% url 'conversation_list' %}" class="lien">Messagerie</a></li>
-                    <li class="NAV"><a href="{% url 'formulaire_recherche' %}" class="invitation">Restaurant_Date</a></li>
 
-                    
-                </ul>
-            </nav>
         </header>
 
         <main>
             <section id="suggested_users">
                 <h2>Utilisateurs suggérés</h2>
-                <ul>
+                <ul class="list-group">
                     {% if suggested_profiles %}
                         {% for profile in suggested_profiles %}
-                            <li>
+                            <li class="list-group-item">
                                 <a href="{% url 'profile_detail' profile.user.username %}">
                                     <strong>{{ profile.user.username }}</strong> 
                                     Email: {{ profile.user.email }} <br>
-                                    
                                 </a>
-                                <button onclick="acceptSuggestion('{{profile.user.id }}')">Accepter</button>
+
+                                <button class="btn btn-pink" onclick="acceptSuggestion('{{profile.user.id}}')">Accepter</button>
                             </li>
                         {% endfor %}
                     {% else %}
-                        <li>Aucun utilisateur suggéré pour le moment.</li>
+                        <li class="list-group-item">Aucun utilisateur suggéré pour le moment.</li>
                     {% endif %}
                 </ul>
             </section>
@@ -50,6 +102,7 @@
         </footer>
     </div>
 
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
         function acceptSuggestion(profileId) {
             fetch("{% url 'accept_suggestions' profile_id=0 %}".replace('0', profileId), {
@@ -60,12 +113,14 @@
                 }
             }).then(response => response.json()).then(data => {
                 if (data.status === 'success') {
-                    window.location.href = "{% url 'conversation_detail' conversation_id=0 %}",replace('0', data.conversation_id);
+
+                    // Rediriger vers la page de détail de la conversation
+                    window.location.href = "{% url 'conversation_detail' conversation_id=0 %}".replace('0', data.conversation_id);
                 }
-            }).catch(error =>{console.error('Error accepting suggestion:',error)
-        });
+            }).catch(error => {
+                console.error('Error accepting suggestion:', error);
+            });
         }
-        </script>
-        
+    </script>
 </body>
 </html>

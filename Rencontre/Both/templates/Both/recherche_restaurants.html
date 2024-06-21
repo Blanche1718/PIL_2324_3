@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Restaurants</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: palevioletred; 
+            padding: 20px;
+        }
+
+        h1 {
+            color: #343a40; /* Couleur de titre foncé */
+        }
+
+        form {
+            background-color: #fff; /* Fond blanc pour le formulaire */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select, button {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: black; /* Bleu pour le bouton Rechercher */
+            color: #fff; /* Texte blanc */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: plum; /* Bleu foncé au survol */
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recherche de Restaurants</h1>
+        <form action="{% url 'restaurant' %}" method="GET">
+            <div class="form-group">
+                <label for="cuisine">Choisir le type de cuisine :</label>
+                <select class="form-control" name="cuisine" id="cuisine">
+                    <option value="italienne">Cuisine italienne</option>
+                    <option value="francaise">Cuisine française</option>
+                    <option value="japonaise">Cuisine japonaise</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="budget">Choisir le niveau de budget :</label>
+                <select class="form-control" name="budget" id="budget">
+                    <option value="bon_marche">Bon marché</option>
+                    <option value="modere">Modéré</option>
+                    <option value="chic">Chic</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+
+        {% if restaurants %}
+            <h2>Résultats de la recherche</h2>
+            <ul>
+                {% for restaurant in restaurants %}
+                    <li>{{ restaurant.name }} - Cuisine: {{ restaurant.preferred_cuisine }}, Budget: {{ restaurant.budget_level }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

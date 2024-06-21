@@ -21,6 +21,7 @@ urlpatterns = [
     path('password_reset/done/', views.mailsend, name='password_reset_done'),
     path('reset/', views.newpass, name='password_reset_confirm'),
     path('done/',views.done , name='password_reset_complete'),
+<<<<<<< HEAD
     path('formulaire_recherche/', views.formulaire_recherche, name='formulaire_recherche'),
     path('recherche-restaurants/', views.recherche_restaurants, name='recherche_restaurants'),
     path('accept_suggestions/<int:profile_id>/', views.accept_suggestion, name='accept_suggestions'),
@@ -28,6 +29,12 @@ urlpatterns = [
     path('conversation_detail/<int:coversation_id>/', views.conversation_detail , name='conversation_detail'),
     path('send_message/',views.send_message , name = 'send_message'),
 
+=======
+    path('accept_suggestions/<int:profile_id>/', views.accept_suggestion, name='accept_suggestions'),
+    path('conversation_list/', views.conversation_list,name='conversation_list'),
+    path('conversation/<int:conversation_id>/' , views.conversation_detail, name='conversation_detail'),
+    path('send_message/', views.send_message, name='send_message'),
+>>>>>>> f719393fe916590d357125b76158da8b25c6bf1f
 ]
 
 
