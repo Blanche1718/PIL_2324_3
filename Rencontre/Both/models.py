@@ -26,8 +26,6 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-
-
 class Restaurant(models.Model):
     BUDGET_CHOICES = [
         ('bon_marche', 'Bon marché'),
@@ -50,9 +48,23 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
     
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Conversation(models.Model):
     participants = models.ManyToManyField(User, related_name='conversations')
+
+    def save(self, *args, **kwargs):
+        if not self.pk and self.participants.count() > 2:
+            raise ValueError("A conversation can only have two participants.")
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def create_conversation(cls, user1, user2):
+        conversation = cls()
+        conversation.save()
+        conversation.participants.add(user1, user2)
+        return conversation
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')

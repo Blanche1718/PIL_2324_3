@@ -40,6 +40,23 @@
         <p><span class="label">Taille:</span> {{ profile.taille }}</p>
         <p><span class="label">Niveau de budget:</span> {{ profile.budget_level }}</p>
         <p><span class="label">Cuisine préférée:</span> {{ profile.preferred_cuisine }}</p>
+        <button onclick="acceptSuggestion('{{profile.user.id }}')">Accepter</button>
     </div>
+    <script>
+        function acceptSuggestion(profileId) {
+            fetch("{% url 'accept_suggestions' profile_id=0 %}".replace('0', profileId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json()).then(data => {
+                if (data.status === 'success') {
+                    window.location.href = "/conversations/" + data.conversation_id + "/";
+                }
+            });
+        }
+        </script>
+        
 </body>
 </html>

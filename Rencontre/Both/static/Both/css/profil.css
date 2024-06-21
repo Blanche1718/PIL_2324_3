@@ -4,10 +4,26 @@ body {
     background-color: #f7b6d2;
 }
 
+p{
+    font-family: 'Open Sans', sans-serif;
+}
+
 .container {
     display: flex;
     flex-direction: row;
     height: 100vh;
+}
+
+.profil_design{
+    font-family: 'Poppins', sans-serif;
+}
+
+p strong{
+    font-family: 'Roboto', sans-serif;
+}
+
+h2 u{
+    font-family: 'Poppins', sans-serif;
 }
 
 .sidebar {
@@ -36,6 +52,7 @@ body {
     color: white;
     text-decoration: none;
     font-size: 18px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .main-content {
@@ -203,4 +220,11 @@ a:hover {
     .about {
         text-align: left;
     }
+}
+
+header .user-info .inf img{
+    max-width: 200px;
+    max-height: 200px;
+    width: 200px;
+    height: 200px;
 }

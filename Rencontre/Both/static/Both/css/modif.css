@@ -101,3 +101,21 @@ html:not(.dark-style) .account-settings-links .list-group-item.active {
 op {
     border-radius: 50%;
 }
+
+.font-weight-bold{
+    font-family: 'Poppins', sans-serif;
+}
+
+.list-group a{
+    font-family: 'Poppins', sans-serif;
+}
+
+.card-body{
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+}
+
+.border-light .form-group label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+}
