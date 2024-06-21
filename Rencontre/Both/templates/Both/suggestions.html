@@ -62,7 +62,7 @@
                         <a class="nav-link" href="{% url 'conversation_list'%}">Messagerie</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'restaurant' %}">Restaurant_Date</a>
+                        <a class="nav-link" href="{% url 'formulaire_recherche' %}">Restaurant_Date</a>
                     </li>
                 </ul>
             </div>
@@ -104,23 +104,20 @@
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
-        function acceptSuggestion(profileId) {
-            fetch("{% url 'accept_suggestions' profile_id=0 %}".replace('0', profileId), {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json()).then(data => {
-                if (data.status === 'success') {
-
-                    // Rediriger vers la page de détail de la conversation
-                    window.location.href = "{% url 'conversation_detail' conversation_id=0 %}".replace('0', data.conversation_id);
-                }
-            }).catch(error => {
-                console.error('Error accepting suggestion:', error);
-            });
-        }
+        fetch("{% url 'accept_suggestions' profile_id=0 %}".replace('0', profileId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                // Rediriger vers la page de liste de conversation avec l'ID de conversation obtenu
+                window.location.href = "{% url 'conversation_detail' 0 %}".replace('0', data.conversation_id);
+            }
+        }).catch(error => {
+            console.error('Erreur lors de l\'acceptation de la suggestion :', error);
+        });
     </script>
 </body>
 </html>
