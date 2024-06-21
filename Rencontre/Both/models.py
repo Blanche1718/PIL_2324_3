@@ -55,22 +55,17 @@ from django.dispatch import receiver
 
 class Conversation(models.Model):
     participants = models.ManyToManyField(User, related_name='conversations')
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    @classmethod
-    def create_conversation(cls, user1, user2):
-        # Créer une nouvelle conversation entre user1 et user2
-        conversation = cls.objects.create()
+    @staticmethod
+    def create_conversation(user1, user2):
+        conversation = Conversation.objects.create()
         conversation.participants.add(user1, user2)
         return conversation
 
-    def _str_(self):
-        participant_names = ', '.join([user.username for user in self.participants.all()])
-        return f"Conversation between {participant_names}"
-
 class Message(models.Model):
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    conversation = models.ForeignKey(Conversation, related_name='messages', on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-
 

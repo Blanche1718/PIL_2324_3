@@ -4,12 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulaire de Recherche</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fce4ec; /* Fond rose pastel chic */
+            color: #333; /* Couleur du texte foncée pour une bonne lisibilité */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .search-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #e91e63; /* Rose foncé chic pour le titre */
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #e91e63; /* Rose foncé chic pour le bouton */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d81b60; /* Couleur légèrement plus foncée au survol */
+        }
+    </style>
 </head>
 <body>
-    <h1>Recherche de Restaurants</h1>
-    <form action="{% url 'recherche_restaurants' %}" method="GET">
-        {{ form.as_p }}
-        <button type="submit">Rechercher</button>
-    </form>
+    <div class="search-container">
+        <h1>Recherche de Restaurants</h1>
+        <form action="{% url 'recherche_restaurants' %}" method="GET">
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>
 </html>

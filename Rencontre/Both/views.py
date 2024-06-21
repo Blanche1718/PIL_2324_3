@@ -267,6 +267,7 @@ def conversation_detail(request, conversation_id):
     return render(request, 'Both/conversation_detail.html', {'conversation': conversation_detail, 'messages': messages, 'form': form})
 
 
+
 def send_message(request):
     if request.method == 'POST':
         conversation_id = request.POST.get('conversation_id')
@@ -276,6 +277,12 @@ def send_message(request):
         return JsonResponse({'status': 'success', 'message': message.content, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')})
     return JsonResponse({'status': 'error'})
 
+
+def get_messages(request, conversation_id):
+    conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
+    messages = conversation.messages.order_by('timestamp')
+    message_list = [{'sender': message.sender.username, 'content': message.content, 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')} for message in messages]
+    return JsonResponse(message_list, safe=False)
 
 @login_required
 def suggestion_view(request):
@@ -294,7 +301,6 @@ def suggestion_view(request):
     
     return render(request, 'Both/suggestions.html', context)
 
-@login_required
 def accept_suggestion(request, profile_id):
     other_user_profile = get_object_or_404(Profile, id=profile_id)
     other_user = other_user_profile.user

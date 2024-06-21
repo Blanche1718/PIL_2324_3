@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Résultats de la recherche de Restaurants</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .restaurant {
             margin-bottom: 20px;
@@ -14,28 +15,39 @@
         }
     </style>
 </head>
-<body>
-    <h1>Résultats de la recherche</h1>
-    <p>Vous avez recherché : Cuisine {{ cuisine }} et Budget {{ budget }}</p>
-    {% if restaurants %}
-        {% for restaurant in restaurants %}
-            <div class="restaurant">
-                <h3>{{ restaurant.name }}</h3>
-                <p>Cuisine: {{ restaurant.get_preferred_cuisine_display }}</p>
-                <p>Budget: {{ restaurant.get_budget_level_display }}</p>
-                {% if restaurant.website_url %}
-                    <p><a href="{{ restaurant.website_url }}" target="_blank">Site Web</a></p>
-                {% endif %}
-                {% if restaurant.image_url %}
-                    <a href="{{ restaurant.website_url }}" target="_blank">
-                        <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}">
-                    </a>
-                {% endif %}
+<body class="bg-light">
+    <div class="container">
+        <h1 class="my-4">Résultats de la recherche</h1>
+        <p>Vous avez recherché : <strong>Cuisine {{ cuisine }}</strong> et <strong>Budget {{ budget }}</strong></p>
+        {% if restaurants %}
+            <div class="row">
+                {% for restaurant in restaurants %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card mb-4">
+                            {% if restaurant.image_url %}
+                                <a href="{{ restaurant.website_url }}" target="_blank">
+                                    <img src="{{ restaurant.image_url }}" class="card-img-top" alt="{{ restaurant.name }}">
+                                </a>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ restaurant.name }}</h5>
+                                <p class="card-text">Cuisine: {{ restaurant.get_preferred_cuisine_display }}</p>
+                                <p class="card-text">Budget: {{ restaurant.get_budget_level_display }}</p>
+                                {% if restaurant.website_url %}
+                                    <a href="{{ restaurant.website_url }}" target="_blank" class="btn btn-primary">Site Web</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    {% else %}
-        <p>Aucun restaurant trouvé pour les critères spécifiés.</p>
-    {% endif %}
+        {% else %}
+            <p class="alert alert-warning">Aucun restaurant trouvé pour les critères spécifiés.</p>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>
 </html>
-    

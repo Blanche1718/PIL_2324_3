@@ -25,8 +25,9 @@ urlpatterns = [
     path('recherche-restaurants/', views.recherche_restaurants, name='recherche_restaurants'),
     path('accept_suggestions/<int:profile_id>/', views.accept_suggestion, name='accept_suggestions'),
     path('conversation_list/', views.conversation_list , name='conversation_list'),
-    path('conversation_detail/<int:coversation_id>/', views.conversation_detail , name='conversation_detail'),
+    path('conversation_detail/<int:conversation_id>/', views.conversation_detail , name='conversation_detail'),
     path('send_message/',views.send_message , name = 'send_message'),
+    path('get_messages/',views.get_messages , name = 'get_messages'),
 ]
 
 
